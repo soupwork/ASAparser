@@ -165,7 +165,7 @@ class NetworkObject():
     
 if __name__=="__main__":
     print("running __main__ ASAclassesFeb")
-    asa1obj=ASAobject("ASA1", "ASA-01simpleDC1_2016aug25th1400hrs.txt") #create the ASAobject
+    asa1obj=ASAobject("ASA1", "shortASA-NetObjTest.txt") #create the ASAobject
     asa1obj.loadarray() #execute the load array function 
     print("length of asa object list is ", len(asa1obj.networkobjarray))
     
