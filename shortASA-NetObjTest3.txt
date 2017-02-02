@@ -1,0 +1,18 @@
+first line
+second line
+object network OBJNET08
+ host 192.168.3.8
+ description Certificate Authority Test Object
+object network OBJNET02
+ host 192.168.3.2
+ description NTP Test Object 
+ 
+object network OBJNET01
+ host 192.168.3.1
+ description Gateway Test Object
+spam
+spam
+
+spam
+thirtieth line
+thirty-first line

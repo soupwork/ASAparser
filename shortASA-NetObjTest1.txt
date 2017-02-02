@@ -1,0 +1,32 @@
+first line
+second line
+object network OBJNET08
+ host 192.168.1.8
+ description Certificate Authority Test Object
+object network OBJNET07
+ host 192.168.1.7
+object network OBJNET06
+ host 192.168.1.6
+this line is ignored, since it does not start with object network
+object network OBJNET05
+ host 192.168.1.5
+ description SCOM Server Test Object
+object network OBJNET04
+ host 192.168.1.4
+ description Radius Server Test Object
+object network OBJNET03
+ host 192.168.1.3
+ description Radius Server Test Object 
+object network OBJNET02
+ host 192.168.1.2
+ description NTP Test Object 
+ 
+ object network OBJNET01
+ host 192.168.1.1
+ description Gateway Test Object
+spam
+spam
+spam
+thirtieth line
+thirty-first line
+This test file uses the network 192.168.1.x/hosts in reverse order with some extra lines to filter out
