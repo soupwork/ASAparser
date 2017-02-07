@@ -1,0 +1,26 @@
+ShortASA-NetObjTest5.txt has names that are not the same as test.txt
+second line
+object network OBJNET01a
+ host 192.168.0.1
+ description Gateway Test Object
+object network OBJNET02a
+ host 192.168.0.2
+ description NTP Test Object
+object network OBJNET03
+ host 192.168.0.3
+ description Radius Server Test Object
+object network OBJNET04
+ host 192.168.0.4
+ description Radius Server Test Object
+object network OBJNET05
+ host 192.168.0.5
+ description SCOM Server Test Object
+object network OBJNET06
+ host 192.168.0.6
+object network OBJNET07
+ host 192.168.0.7
+object network OBJNET08
+ host 192.168.0.8
+ description Certificate Authority Test Object
+twenty-fifth line
+twenty-sixth line
