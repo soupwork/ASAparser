@@ -9,6 +9,23 @@ I also like python, and this exercise gives me a lot of practice in Classes, fil
     it should give me practice in checking preconditions (like are two configs loaded for compare, is the file avail for writing?)
     In the future, it should be a way to try out a GUI using tkinter.
 
-How could I automatically ennumerate the ASA objects? I will need at least one. two, if I am going to compare two. Maybe up to four should be available. 
-Seems like a waste to put them into a four-element list. It may be the easiest, most obvious way to store the objects. It would be easy to check if an object exists if it was an element in a list. 
-If I query the length of the ASAlist, that value will be the next unused slot. I can append/insert into that position.
+How could I automatically ennumerate the ASA objects. I will need at least one. two, if I am going to compare two. Maybe up to four should be available. Seems like a waste to put them into a four-element list. It may be the easiest, most obvious way to store the objects. It would be easy to check if an object exists if it was an element in a list. If I query the length of the ASAlist, that value will be the next unused slot. I can append/insert into that position.
+
+i'm no ascii artist, but it may be the easiest way to show the relationship.
+
+          --------------------------------------------
+asalist >> asa object | asaobj | asaobj | ... |asaobj |
+          --------------------------------------------
+          
+               -----------------------------------------------
+asa object  >> network object | netobj | netobj | ... |netobj |
+    data       ----------------------------------------------- 
+               ----------------------------------------------------
+            >>  service object | servobj | servobj | ... | servobj |
+               ----------------------------------------------------
+
+    Methods<<
+            load asaobject network objects from text file into a list
+            sort asaobject network objects into a new list
+            
+Network Objects could probably be stored in a dictionary or tuple. I am using a class because i'm not sure about methods for sorting and interrelationships on other objects, so i'm leaving it as a class.             
