@@ -29,7 +29,7 @@ def inputASAdetails():
        
     return(asaname,asa_filename1)
     
-def fileOutputPrompt():
+def outputPrompt():
     """ determine screen/file/both/none
         test that a file can be opened and written to
         returns the file name or 'None' if output to screen
@@ -47,6 +47,8 @@ def fileOutputPrompt():
             asa_OUTfilename="writeASA-NetObjTest.txt"
         print("output filename ", asa_OUTfilename)
         fileoutput=True
+    elif outputoption=="s":
+        asa_OUTfilename="screen"     
     else: fileoutput=False  
     print("testing file write now")
     if fileoutput : #open file for writing
@@ -59,9 +61,23 @@ def fileOutputPrompt():
     #else:    
     return (asa_OUTfilename)
     
-    #end fileOutputPrompt
-def compareASAs (asa1, asa2):    
-    pass    
+    #end outputPrompt
+    
+def loadASAs():
+    asalist.append(ASAobject(inputASAdetails())) #create the ASAobject through input and append to array
+    asalist[asaindex].loadarray() #execute the load array function  
+    print("length of asa object list is ", len(asalist[asaindex].networkobjarray))
+    asalist[asaindex].wastefullsort(asalist[asaindex].networkobjarray,asalist[asaindex].sortednetworkobjarray)
+    printOneASA(asalist[asaindex])
+    
+    
+    
+def compareASAs (asa1, asa2):  
+    """compare network objects by name"""
+    
+    for name in asa1.sortednetworkobjarray 
+      print("name ", name.name)
+    return   
 
 def testCompareASAs():
     """this function will create two ASA objects based on test values. 
@@ -79,11 +95,13 @@ def testCompareASAs():
     
 def printOneASA(asaobj):
     
-    
+    outfile=outputPrompt()#screen, none, or a real filename
+    if outfile !="none"
     for netobj in asaobj.sortednetworkobjarray:
-        print("\n  sorted name ",netobj.name)
-        for detail in netobj.paramlist:
-            print("sorted detail ", detail)
+        if outfile=="screen" : 
+            print("\n  sorted name ",netobj.name)
+            for detail in netobj.paramlist:
+                print("sorted detail ", detail)
     return()        
 
 def displayASAnames():
@@ -93,6 +111,7 @@ def displayASAnames():
         for element in asalist:
             print ("ASA name ", element.name)
             printOneASA(element)
+    else:print("no ASAs Loaded")        
     return()
     
 def mainmenu():    
@@ -123,16 +142,16 @@ if __name__=="__main__":
         asaindex=len(asalist)
         if maininput=='l': #loadASA object into asalist
             #load object will always append
-            asalist.append(ASAobject(inputASAdetails())) #create the ASAobject through input and append to array
-            asalist[asaindex].loadarray() #execute the load array function  
-            print("length of asa object list is ", len(asalist[asaindex].networkobjarray))
-            asalist[asaindex].wastefullsort(asalist[asaindex].networkobjarray,asalist[asaindex].sortednetworkobjarray)
-            printOneASA(asalist[asaindex])
+            loadASA()
         elif maininput=='d': #display
+            if len(asalist)<1:
+                print("no ASA's loaded")
+                loadASAS()
             displayASAnames()
-            #printOneASA(asalist[asaindex])
+            
+            #
         elif maininput=='c': #compare
-            printOneASA(asalist[asaindex])  
+            pass  
         elif maininput=='f': #find/search
             printOneASA(asa1obj)       
         elif maininput=='q': #quit
@@ -140,7 +159,7 @@ if __name__=="__main__":
             print("quit is true")
         #*******************************************    
         elif maininput=="1": #if maininput is number one, do a test on the thing i'm working on right now
-            print(fileOutputPrompt()) 
+            print(outputPrompt()) 
         #********************************************        
         elif maininput=="t": #run the sequence test.
             pass
