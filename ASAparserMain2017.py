@@ -40,6 +40,7 @@ def outputPrompt():
     outputoption=outputoption[:1] #trim to one char
     outputoption=outputoption.lower()
     print("output option ", outputoption)
+    #'b' or 'f' is file output, 's' is screen, other is none
     if outputoption=="f" or outputoption=="b":
         print("what is the filename? [default writeASA-NetObjTest.txt]")
         asa_OUTfilename=input()
@@ -48,19 +49,20 @@ def outputPrompt():
         print("output filename ", asa_OUTfilename)
         fileoutput=True
     elif outputoption=="s":
-        asa_OUTfilename="screen"     
+        asa_OUTfilename="screen"
+        fileoutput=False
     else: fileoutput=False  
-    print("testing file write now")
+   
     if fileoutput : #open file for writing
+        print("testing file write now")
         # I know I should put a try/except/else in here in the future
         testfile =open(asa_OUTfilename, 'w')
         testfile.write("this is a test\n")
         testfile.close()
         testfile =open(asa_OUTfilename, 'r')
         print(testfile.read())
-    #else:    
+        #else:    
     return (asa_OUTfilename)
-    
     #end outputPrompt
     
 def loadASAs():
@@ -74,34 +76,51 @@ def loadASAs():
     
 def compareASAs (asa1, asa2):  
     """compare network objects by name"""
+    asa2index=0 #counter
     
-    for name in asa1.sortednetworkobjarray 
-      print("name ", name.name)
+    for asa1obj in asa1.sortednetworkobjarray:
+        
+        if asa1obj.name == asa2.sortednetworkobjarray[asa2index].name:
+            print("name ", asa1obj.name, " == ", asa2.sortednetworkobjarray[asa2index].name)
+            asa2index+=1 #increment counter
+        elif asa1obj.name < asa2.sortednetworkobjarray[asa2index].name:
+            print("name ", asa1obj.name, " << ", asa2.sortednetworkobjarray[asa2index].name)
+            #do not increment counter
+        elif asa1obj.name > asa2.sortednetworkobjarray[asa2index].name:
+            print("name ", asa1obj.name, " << ", asa2.sortednetworkobjarray[asa2index].name)
+            asa2index+=1 #increment counter  
     return   
 
 def testCompareASAs():
     """this function will create two ASA objects based on test values. 
         then it will call the compare function
         then the print/save function"""
-    asa1obj=ASAobject("ASA1") #create the ASAobject
-    asa1obj.loadarray() #execute the load array function  
-    print("length of asa object list is ", len(asa1obj.networkobjarray))
-    asa1obj.wastefullsort(asa1obj.networkobjarray,asa1obj.sortednetworkobjarray)
-    asa2obj=ASAobject("ASA2","shortASA-NetObjTest5.txt") #create the second ASAobject
-    asa2obj.loadarray() #execute the load array function  
-    print("length of asa object list is ", len(asa2obj.networkobjarray))
-    asa2obj.wastefullsort(asa2obj.networkobjarray, asa2obj.sortednetworkobjarray)
+    #create ASA1
+    asalist.append(ASAobject("ASA1")) #create the ASAobject 
+    asalist[0].loadarray() #execute the load array function  
+    print("length of asa object list is ", len(asalist[0].networkobjarray))
+    asalist[0].wastefullsort(asalist[0].networkobjarray,asalist[0].sortednetworkobjarray)
+    #create ASA2
+    asalist.append(ASAobject("ASA2")) #create the ASAobject 
+    asalist[1].loadarray() #execute the load array function  
+    print("length of asa object list is ", len(asalist[1].networkobjarray))
+    asalist[1].wastefullsort(asalist[1].networkobjarray,asalist[1].sortednetworkobjarray)
+    #now i have two asa objects, sorted. 
+    #run the compare function
+    compareASAs(asalist[0], asalist[1])
+    
     return()
     
 def printOneASA(asaobj):
     
     outfile=outputPrompt()#screen, none, or a real filename
-    if outfile !="none"
-    for netobj in asaobj.sortednetworkobjarray:
-        if outfile=="screen" : 
-            print("\n  sorted name ",netobj.name)
-            for detail in netobj.paramlist:
-                print("sorted detail ", detail)
+    if outfile !="none":
+        for netobj in asaobj.sortednetworkobjarray:
+            if outfile=="screen" : 
+                print("\n  sorted name ",netobj.name)
+                for detail in netobj.paramlist:
+                    print("sorted detail ", detail)
+                    
     return()        
 
 def displayASAnames():
@@ -159,7 +178,7 @@ if __name__=="__main__":
             print("quit is true")
         #*******************************************    
         elif maininput=="1": #if maininput is number one, do a test on the thing i'm working on right now
-            print(outputPrompt()) 
+            print(testCompareASAs()) 
         #********************************************        
         elif maininput=="t": #run the sequence test.
             pass
