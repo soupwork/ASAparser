@@ -8,7 +8,7 @@
 
 from ASAclassesFeb import ASAobject
 
-asa_filename1="shortASA-NetObjTest.txt"
+asa_filename1="shortASA-NetObjTest5.txt"
 asa_filename2="shortASA-NetObjTest1.txt"
 asalist=[]#this is a list of asa objects.
 
@@ -77,10 +77,12 @@ def loadASAs():
 def compareASAs (asa1, asa2):  
     """compare network objects by name"""
     asa2index=0 #counter
-    
+    # asa1"a" < asa2"b"
+    # asa1"A" < asa2"a"
     for asa1obj in asa1.sortednetworkobjarray:
         
         if asa1obj.name == asa2.sortednetworkobjarray[asa2index].name:
+            outline=asa1obj.name
             print("name ", asa1obj.name, " == ", asa2.sortednetworkobjarray[asa2index].name)
             asa2index+=1 #increment counter
         elif asa1obj.name < asa2.sortednetworkobjarray[asa2index].name:
@@ -96,7 +98,7 @@ def testCompareASAs():
         then it will call the compare function
         then the print/save function"""
     #create ASA1
-    asalist.append(ASAobject("ASA1")) #create the ASAobject 
+    asalist.append(ASAobject("ASA1",asa_filename1)) #create the ASAobject 
     asalist[0].loadarray() #execute the load array function  
     print("length of asa object list is ", len(asalist[0].networkobjarray))
     asalist[0].wastefullsort(asalist[0].networkobjarray,asalist[0].sortednetworkobjarray)
@@ -106,8 +108,13 @@ def testCompareASAs():
     print("length of asa object list is ", len(asalist[1].networkobjarray))
     asalist[1].wastefullsort(asalist[1].networkobjarray,asalist[1].sortednetworkobjarray)
     #now i have two asa objects, sorted. 
+    #check output options
+    #outputselect=outputPrompt()#outputselect will be filename 
+    outputselect="writeASA-NetObjTest.txt"
     #run the compare function
-    compareASAs(asalist[0], asalist[1])
+    asalist[0].writeOneASA(outputselect)
+        
+    #compareASAs(asalist[0], asalist[1])
     
     return()
     
@@ -124,7 +131,8 @@ def printOneASA(asaobj):
     return()        
 
 def displayASAnames():
-    """each element in asalist will have an asa object with a name and filename"""
+    """each element in asalist will have an asa object with a name and filename
+        Called from Main Menu(D)"""
     if len(asalist)>0:
         print(len(asalist)," elements entered in ASA Parser")
         for element in asalist:

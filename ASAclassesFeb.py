@@ -29,14 +29,10 @@ class ASAobject():
         # asafilename="shortASA-NetObjTest.txt" default filename added for testing
         self.networkobjarray=[] #instance list of complete network objects
         self.sortednetworkobjarray=[] #instance list of complete network objects
-        
+        self.name=name
         self.asafilename = asafilename
-        print("inside __init__")
-        print(self.asafilename)
-       
         return #end init
-        
-        
+ 
         
     def loadarray (self):
         """ vars
@@ -53,8 +49,7 @@ class ASAobject():
             arrayindex=0
             for dataline in datasource: #each iteration reads a line from file
                 tempstring=dataline
-                #if (len(tempstring)>1):
-                    #tempstring = tempstring[:-1] #remove the newline from the end
+                
                 while "object network " in tempstring: 
                     #[0:15] is slice that contains obj network
                     objindex=0
@@ -80,7 +75,7 @@ class ASAobject():
     def wastefullsort(self, networkobjarray, sortednetworkobjarray):
         
         #sort network objects by name
-        print("Wasteful Sort Network Objects by Name")
+        #print("Wasteful Sort Network Objects by Name")
         """
           if element is first element, append to sortednetworkobjarray (position 0)
           if element is greater than last element in sortednetworkobjarray, append to list
@@ -93,34 +88,53 @@ class ASAobject():
         
         #len(objectarray) is one more than the max index
         for testobject in networkobjarray: #each pass picks one element
-            print("test object pass# ", sortindex)
+            #print("test object pass# ", sortindex)
             if (len(sortednetworkobjarray) < 1): 
                 sortednetworkobjarray.append(testobject)
-                print("first element")
+                #print("first element")
             else: #count backwards from end until sort position found
                 count=len(sortednetworkobjarray) #count is index of last position
-                print("else count is ", count)
+                #print("else count is ", count)
                 if testobject.name < sortednetworkobjarray[count-1].name:
                     print("testobject.name < sortednetworkobjarray[count].name >>proceed to while loop")
                 while (testobject.name < sortednetworkobjarray[count-1].name) and (count>0):
                     count-=1 #decrement counter same as count = count-1
-                    print("inside while count is ", count)
-                    #end while
-                    print(testobject.name, " < ", sortednetworkobjarray[count-1].name)
-                print("outside while count is ", count)
-                print(testobject.name, " >= ", sortednetworkobjarray[count-1].name)
-               
+                #end while
+                print(testobject.name, " < ", sortednetworkobjarray[count-1].name)
+                (testobject.name).strip() #remove leading/trailing spaces
                 sortednetworkobjarray.insert(count,testobject)
-                
+            #end if-find sort position    
             print("testobject ", testobject.name, id(testobject))
             print("sort index ", sortindex, sortednetworkobjarray[sortindex].name)
             print("\n *************************************\n")
             sortindex +=1 #increment index
             
         #end for loop    
-        print("end wastefull sort")   
+        print("end wastefull sort")
+        print("length of sorted array is ",len(sortednetworkobjarray), " elements")
         return() #end Wastefull Sort
-    
+ 
+    def set38chars(self, teststring):
+        """this function will adjust to 38 chars for print and file output
+            teststring may be greater or less than 38 chars
+            shortstring is the new string. extrastring is the leftovers
+            realisticly, only description will be longer than 38 chars"""
+        teststring=teststring.strip() #if length is 38, don't change anything  
+        stringlen=len(teststring)
+        print("Length of teststring is ", stringlen)    
+        if stringlen<38:
+            #padding=" "*(38-stringlen)
+            #print("Length of padding is ", len(padding))
+            #newstring=teststring+padding
+            teststring=teststring.ljust(38)
+        elif stringlen>8 and teststring.startswith("description"):
+            #check if starts with description
+            print("starts with description")
+            
+        
+        print("Length of adjusted teststring is ", len(teststring))   
+        return(teststring)
+ 
     def printarray(self, testarray):
         """ prints networkobjarray or sortednetworkobjarray"""
         print("inside printarray")
@@ -128,6 +142,22 @@ class ASAobject():
              print ("testname ", testobject.name)
              
         return  #end print array     
+    
+    def writeOneASA(self,outputselect):
+        """write the sorted network object array to a file
+            each network object has a name and a parameter list"""
+        print("output select is ", outputselect)
+        fileout=open(outputselect, 'a')#open filename, append to end
+        for netobj in self.sortednetworkobjarray:
+            #netobjname=self.set38chars(netobj.name)
+            print ("writing to file ", netobj.name)
+            fileout.write(netobj.name)
+            fileout.write(" \n")
+            for element in netobj.paramlist:
+                fileout.write(element)
+                fileout.write(" \n")
+        fileout.close() #close the file    
+        return
     #end class ASAobject
         
 # *************  begin Network object class *************
@@ -165,7 +195,7 @@ class NetworkObject():
     
 if __name__=="__main__":
     print("running __main__ ASAclassesFeb")
-    asa1obj=ASAobject("ASA1", "shortASA-NetObjTest.txt") #create the ASAobject
+    asa1obj=ASAobject("ASA1") #create the ASAobject
     asa1obj.loadarray() #execute the load array function 
     print("length of asa object list is ", len(asa1obj.networkobjarray))
     
@@ -174,7 +204,9 @@ if __name__=="__main__":
     for netobj in asa1obj.sortednetworkobjarray:
         print("\n  sorted name ",netobj.name)
         for detail in netobj.paramlist:
-            print("sorted detail ", detail)      
+            
+            print("sorted detail ", detail)
+            
     #print(asa1obj.networkobjarray[0].name)
     # print(asa1obj.networkobjarray[0].paramlist[0])
     # print(asa1obj.networkobjarray[0].paramlist[1])
