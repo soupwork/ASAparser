@@ -30,4 +30,7 @@ asa object  >> network object | netobj | netobj | ... |netobj |
             
 Network Objects could probably be stored in a dictionary or tuple. Tuples are immutable, dictionaries are mutable. Sorting would be easier for both tuples and dictionaries. Indexing would be possible on dictionaries, but not with tuples. I am using a class because i'm not sure about methods for sorting and interrelationships on other objects, so i'm leaving it as a class.             
 
-For outputting to a file, if I call the function to output to a file for a single object, i'll call the ASA object method. If i need to call the output to file function when comparing two ASA objects, I'll have to do that from the main program.
+For outputting to a file, if I call the function to output to a file for a single object, i'll call the ASA object method. If i need to call the output to file function when comparing two ASA objects, I'll have to do that from the main program. Ha! looking at the methods for opening, writing, and closing a file, I can understand my own confusion. It would be nice if the syntax were the same. I have it working and have my notes now. I would like to know if I can open a file in main, and pass the open file to a class, where the class could write to it, then pass it back to close in main. The good news for me is that python does not insert a linefeed at the end of a write. so I can write over and over to the same line and end it with a newline.
+
+adding padding was straightforward.
+
