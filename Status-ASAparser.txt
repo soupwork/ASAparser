@@ -1,0 +1,27 @@
+Where am I at right now with my ASA Parser tool?
+
+
+
+2017 mar 04th
+writing to a file was the most important function for me to get working. I still want to bring in ACL's, Service Objects, etc. I still want to have a working compare function. I still want to have a working search function. I still want to make a working GUI. I want to complete some certifications more than all of this other stuff, so shifting back to the back burner for the moment, until I need a distraction.
+
+file write
+  writelines is working. I can bring in a file, and it will write to my specified file all of the network objects. I need to verify this will all work going through the menu.
+GUI
+  TKinter is based on TCL, which means not the same as Python. I see that getters and setters are used in tcl, but discouraged in python. just means i will have to pay attention.  
+2017 feb 27th
+file write (writelines method)
+  had a change of heart on writing to the file.
+  instead of having a class method as well as function in the main module, both operations will happen in the main module
+  writelines will take in a list, and write the list to the file.
+  each network object, service object, acl object, etc. will have a method to put each line into a list to prep for writing to the file
+  
+GUI
+  had a talk with Shayne. the best learning experience will be to deploy a gui using both a class and as a library of functions. on reflection, the gui will be a group of tasks. a class is data and functions. 
+
+Time
+  i wish i had been taking more time to document how much time i am spending on this python program, the challenges, and how I am overcoming the challenges.
+  
+Vars  
+  I need also to go through and look for variables that can be removed or brought down to more local namespaces. and make them more consistent. 
+  

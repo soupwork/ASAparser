@@ -56,8 +56,12 @@ class ASAobject():
                     objname=tempstring[15:-1]
                     tempstring=datasource.readline()
                     while tempstring.startswith(" "):
+                        print("length ", len(tempstring))
+                        tempstring=tempstring.strip() #remove leading/trailing spaces
+                        print("stripped length ", len(tempstring))
                         if (len(tempstring)>1) and (len(paramlist)>objindex):
-                            paramlist[objindex]=tempstring[:-1] #remove the newline from the end
+                            paramlist[objindex]=tempstring #add tempstring to the the list
+                            #paramlist[objindex]=tempstring[:-1] #remove the newline from the end
                         else:
                             paramlist.append(tempstring[:-1])
                         objindex+=1 #increment param list index
@@ -143,21 +147,7 @@ class ASAobject():
              
         return  #end print array     
     
-    def writeOneASA(self,outputselect):
-        """write the sorted network object array to a file
-            each network object has a name and a parameter list"""
-        print("output select is ", outputselect)
-        fileout=open(outputselect, 'a')#open filename, append to end
-        for netobj in self.sortednetworkobjarray:
-            #netobjname=self.set38chars(netobj.name)
-            print ("writing to file ", netobj.name)
-            fileout.write(netobj.name)
-            fileout.write(" \n")
-            for element in netobj.paramlist:
-                fileout.write(element)
-                fileout.write(" \n")
-        fileout.close() #close the file    
-        return
+
     #end class ASAobject
         
 # *************  begin Network object class *************
@@ -187,6 +177,20 @@ class NetworkObject():
         for field in self.paramlist:
             print( "  ", field)
         return (self.name)
+        
+    def onelist (self):
+        """take the name and param list and form into a single list"""
+        newlist=[self.name]
+        for element in self.paramlist:
+            tempstring=str(element)
+            print("tempstring ", tempstring)
+
+            newlist.append(tempstring)
+            
+        #print("length of netobj newlist ", len(newlist))    
+        
+        return(newlist)
+        
 ##************* end network object class *************
   
 
@@ -199,14 +203,9 @@ if __name__=="__main__":
     asa1obj.loadarray() #execute the load array function 
     print("length of asa object list is ", len(asa1obj.networkobjarray))
     
-    #asa1obj.printarray(asa1obj.networkobjarray)   
     asa1obj.wastefullsort(asa1obj.networkobjarray,asa1obj.sortednetworkobjarray)  
     for netobj in asa1obj.sortednetworkobjarray:
         print("\n  sorted name ",netobj.name)
-        for detail in netobj.paramlist:
+        newlist=netobj.onelist()
             
-            print("sorted detail ", detail)
-            
-    #print(asa1obj.networkobjarray[0].name)
-    # print(asa1obj.networkobjarray[0].paramlist[0])
-    # print(asa1obj.networkobjarray[0].paramlist[1])
+    

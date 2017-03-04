@@ -8,7 +8,7 @@
 
 from ASAclassesFeb import ASAobject
 
-asa_filename1="shortASA-NetObjTest5.txt"
+asa_filename1="shortASA-NetObjTest1.txt"
 asa_filename2="shortASA-NetObjTest1.txt"
 asalist=[]#this is a list of asa objects.
 
@@ -98,6 +98,7 @@ def testCompareASAs():
         then it will call the compare function
         then the print/save function"""
     #create ASA1
+    newlist=[] #list containing name, and network object fields
     asalist.append(ASAobject("ASA1",asa_filename1)) #create the ASAobject 
     asalist[0].loadarray() #execute the load array function  
     print("length of asa object list is ", len(asalist[0].networkobjarray))
@@ -112,12 +113,21 @@ def testCompareASAs():
     #outputselect=outputPrompt()#outputselect will be filename 
     outputselect="writeASA-NetObjTest.txt"
     #run the compare function
-    asalist[0].writeOneASA(outputselect)
+    
+    #test the write function
+    for element in asalist[0].sortednetworkobjarray:
+        newlist.append(element.onelist())
+        #each newlist element is a list of strings: name, ip, description
+        
+    writelines(newlist)
+    
         
     #compareASAs(asalist[0], asalist[1])
     
     return()
     
+ 
+        
 def printOneASA(asaobj):
     
     outfile=outputPrompt()#screen, none, or a real filename
@@ -130,6 +140,25 @@ def printOneASA(asaobj):
                     
     return()        
 
+    
+def writelines (writelist, outputselect="writeASA-NetObjTest.txt"):
+    """write to a file. outputselect is filename
+        writelist is list of lines to be appended to file.
+        writelist, outputselect="writeASA-NetObjTest.txt"    """
+    print("output select is ", outputselect)
+    fileout=open(outputselect, 'a')#open filename, append to end
+    
+    for line in writelist:
+        #print( line[0], "writelist element , line element 0")
+        #print( line[1], "writelist element , line element 1")
+        for element in line:
+            print ("write element ", element)
+            fileout.write(element)
+            fileout.write(" \n")
+            
+    fileout.close() #close the file    
+    return    
+    
 def displayASAnames():
     """each element in asalist will have an asa object with a name and filename
         Called from Main Menu(D)"""
