@@ -6,11 +6,13 @@
     
 """
 
-from ASAclassesFeb import ASAobject
+from ASAclassesFeb import ASAobject, NetworkObject
 
 asa_filename1="shortASA-NetObjTest1.txt"
 asa_filename2="shortASA-NetObjTest1.txt"
 asalist=[]#this is a list of asa objects.
+blankparamlist=[" "*38,]
+blanknetobj=NetworkObject("blank",blankparamlist)
 
 def inputASAdetails():
     """user input /filename to be used to create an ASA object"""
@@ -66,22 +68,40 @@ def outputPrompt():
     #end outputPrompt
     
 def loadASAs():
-    asalist.append(ASAobject(inputASAdetails())) #create the ASAobject through input and append to array
+    asaname,asa_filename1=inputASAdetails()
+    asalist.append(ASAobject(asaname,asa_filename1)) #create the ASAobject through input and append to array
     asalist[asaindex].loadarray() #execute the load array function  
     print("length of asa object list is ", len(asalist[asaindex].networkobjarray))
     asalist[asaindex].wastefullsort(asalist[asaindex].networkobjarray,asalist[asaindex].sortednetworkobjarray)
-    printOneASA(asalist[asaindex])
+    #printOneASA(asalist[asaindex])
+    return() #end loadASAs
     
+def twoObjToOneList(leftobj=blanknetobj, midobj="    ", rightobj=blanknetobj):
+    print("left object ", leftobj.name)
+    print("middle object ", midobj)
+    print("right object ", rightobj.name)
+    
+    return()
+
+
     
     
 def compareASAs (asa1, asa2):  
-    """compare network objects by name"""
+    """compare network objects by name
+        first check for equality
+        second check for length
+        third concatenate two strings into a single line/string
+        forth return a list
+        leftstring is asa1
+        rightstring is asa2"""
     asa2index=0 #counter
+    mergelist=[] #list containing name, and network object fields
     # asa1"a" < asa2"b"
     # asa1"A" < asa2"a"
     for asa1obj in asa1.sortednetworkobjarray:
         
         if asa1obj.name == asa2.sortednetworkobjarray[asa2index].name:
+            """strings are the same, check length and put them in a single line""" 
             outline=asa1obj.name
             print("name ", asa1obj.name, " == ", asa2.sortednetworkobjarray[asa2index].name)
             asa2index+=1 #increment counter
@@ -109,20 +129,25 @@ def testCompareASAs():
     print("length of asa object list is ", len(asalist[1].networkobjarray))
     asalist[1].wastefullsort(asalist[1].networkobjarray,asalist[1].sortednetworkobjarray)
     #now i have two asa objects, sorted. 
+    
     #check output options
     #outputselect=outputPrompt()#outputselect will be filename 
     outputselect="writeASA-NetObjTest.txt"
     #run the compare function
+    #compareASAs(asalist[0], asalist[1])    
+    compareASAs(asalist[0], asalist[1])
     
-    #test the write function
+    
+    """ write function is working 
     for element in asalist[0].sortednetworkobjarray:
         newlist.append(element.onelist())
         #each newlist element is a list of strings: name, ip, description
         
     writelines(newlist)
-    
+    #write function is working
+    """
         
-    #compareASAs(asalist[0], asalist[1])
+
     
     return()
     
@@ -198,7 +223,7 @@ if __name__=="__main__":
         asaindex=len(asalist)
         if maininput=='l': #loadASA object into asalist
             #load object will always append
-            loadASA()
+            loadASAs()
         elif maininput=='d': #display
             if len(asalist)<1:
                 print("no ASA's loaded")

@@ -1,7 +1,9 @@
 Where am I at right now with my ASA Parser tool?
 
 
-
+2017 mar 07th
+  I can in myself a reluctance to put a lot of code inside a if branch. my code habits are to make a function/method and call that from inside the block. there may be a performance trade-off with readability.
+  
 2017 mar 04th
 writing to a file was the most important function for me to get working. I still want to bring in ACL's, Service Objects, etc. I still want to have a working compare function. I still want to have a working search function. I still want to make a working GUI. I want to complete some certifications more than all of this other stuff, so shifting back to the back burner for the moment, until I need a distraction.
 
@@ -9,6 +11,8 @@ file write
   writelines is working. I can bring in a file, and it will write to my specified file all of the network objects. I need to verify this will all work going through the menu.
 GUI
   TKinter is based on TCL, which means not the same as Python. I see that getters and setters are used in tcl, but discouraged in python. just means i will have to pay attention.  
+  
+  
 2017 feb 27th
 file write (writelines method)
   had a change of heart on writing to the file.
