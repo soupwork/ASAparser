@@ -43,17 +43,20 @@ class ASAobject():
                 tempstring
                 objindex
                 objname
+                objtype
         """        
-        paramlist=["host", "description"] #test values for paramlist
+        paramlist=[] #test values for paramlist
         with open(self.asafilename, 'r') as datasource:
             arrayindex=0
             for dataline in datasource: #each iteration reads a line from file
                 tempstring=dataline
                 
-                while "object network " in tempstring: 
+                while "object network " in tempstring: #load up parameter list 
                     #[0:15] is slice that contains obj network
                     objindex=0
                     objname=tempstring[15:-1]
+                    objtype=tempstring[:14]
+                    print("object type is ", objtype)
                     tempstring=datasource.readline()
                     while tempstring.startswith(" "):
                         print("length ", len(tempstring))
@@ -68,7 +71,9 @@ class ASAobject():
                         tempstring=datasource.readline()
                     #end while - load up param list
                     #now create object and add to networkobjarray
-                    tempnetobj=NetworkObject(objname,paramlist)
+
+                    tempnetobj=NetworkObject(objname, objtype, paramlist)
+                    tempnetobj.printobj()                    
                     self.networkobjarray.append(tempnetobj)
                     arrayindex += 1 #increment index
                
@@ -77,7 +82,6 @@ class ASAobject():
         return() #end load array
     
     def wastefullsort(self, networkobjarray, sortednetworkobjarray):
-        
         #sort network objects by name
         #print("Wasteful Sort Network Objects by Name")
         """
@@ -109,6 +113,7 @@ class ASAobject():
                 sortednetworkobjarray.insert(count,testobject)
             #end if-find sort position    
             print("testobject ", testobject.name, id(testobject))
+            print("testobject ", testobject.objtype)
             print("sort index ", sortindex, sortednetworkobjarray[sortindex].name)
             print("\n *************************************\n")
             sortindex +=1 #increment index
@@ -152,6 +157,53 @@ class ASAobject():
         
 # *************  begin Network object class *************
 class NetworkObject():
+    """ ASA Network Object will have a name, type, description, ip address or network"""
+    """
+    Variables declared at the class level are not default values
+    name = string
+    type = string (object network, object-group network, object service, object-group service)
+    ipv4 = ip address(host) or network
+    description = string
+    paramlist should be ipv4 then description
+    methods
+    init(name,host,description)
+    """    
+    
+
+    def __init__(self, name, objtype, paramlist):
+        self.name=name
+        self.objtype=objtype
+        self.paramlist = list(paramlist) #copy the list
+        #print("new network object, ", name)
+        #for field in self.paramlist:
+        #   print( "paramlist  ", field)
+        
+    
+    def printobj(self):
+        print("obj name ", self.name)
+        print("obj type ", self.objtype)
+        for field in self.paramlist:
+            print( "  ", field)
+        return (self.name)
+        
+    def onelist (self):
+        """take the name and param list and form into a single list"""
+        newlist=[self.name]
+        for element in self.paramlist:
+            tempstring=str(element)
+            print("tempstring ", tempstring)
+
+            newlist.append(tempstring)
+            
+        #print("length of netobj newlist ", len(newlist))    
+        
+        return(newlist)
+        
+##************* end network object class *************
+  
+        
+# *************  begin Network object class *************
+class NetworkObjectGroup():
     """ ASA Network Object will have a name, description, ip address or network"""
     """
     Variables declared at the class level are not default values
@@ -192,8 +244,6 @@ class NetworkObject():
         return(newlist)
         
 ##************* end network object class *************
-  
-
 
 
     

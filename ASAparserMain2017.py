@@ -6,13 +6,13 @@
     
 """
 
-from ASAclassesFeb import ASAobject, NetworkObject
+from ASAclasses import ASAobject, NetworkObject
 
 asa_filename1="shortASA-NetObjTest1.txt"
 asa_filename2="shortASA-NetObjTest1.txt"
 asalist=[]#this is a list of asa objects.
 blankparamlist=[" "*38,]
-blanknetobj=NetworkObject("blank",blankparamlist)
+blanknetobj=NetworkObject("blank", "object network", blankparamlist)
 
 def inputASAdetails():
     """user input /filename to be used to create an ASA object"""
@@ -161,13 +161,16 @@ def printOneASA(asaobj):
         print("create a list of stuff, then print to screen")
         for netobj in asaobj.sortednetworkobjarray:
             print("\n  sorted name ",netobj.name)
+            print("\n  sorted type ",netobj.objtype)
             for detail in netobj.paramlist:
                 print("sorted detail ", detail)
     else: #create a list of stuff, then write it to file
         print("create a list of stuff, then write it to file")
         for netobj in asaobj.sortednetworkobjarray:    
             print("\n  sorted name for writing ",netobj.name)
+            print("\n  sorted type for writing ",netobj.objtype)
             newlist.append(netobj.name)
+            newlist.append(netobj.objtype)
             for detail in netobj.paramlist:
                 print("sorted detail for writing ", detail) 
                 newlist.append(detail)
