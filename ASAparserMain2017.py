@@ -154,15 +154,24 @@ def testCompareASAs():
  
         
 def printOneASA(asaobj):
-    
+    newlist=[] #list containing name, and network object fields
     outfile=outputPrompt()#screen, none, or a real filename
-    if outfile !="none":
+    print("inside printOneASA, filename is ", outfile)
+    if outfile=="screen" :
+        print("create a list of stuff, then print to screen")
         for netobj in asaobj.sortednetworkobjarray:
-            if outfile=="screen" : 
-                print("\n  sorted name ",netobj.name)
-                for detail in netobj.paramlist:
-                    print("sorted detail ", detail)
-                    
+            print("\n  sorted name ",netobj.name)
+            for detail in netobj.paramlist:
+                print("sorted detail ", detail)
+    else: #create a list of stuff, then write it to file
+        print("create a list of stuff, then write it to file")
+        for netobj in asaobj.sortednetworkobjarray:    
+            print("\n  sorted name for writing ",netobj.name)
+            newlist.append(netobj.name)
+            for detail in netobj.paramlist:
+                print("sorted detail for writing ", detail) 
+                newlist.append(detail)
+        writelines(newlist,outfile)        
     return()        
 
     
@@ -173,13 +182,12 @@ def writelines (writelist, outputselect="writeASA-NetObjTest.txt"):
     print("output select is ", outputselect)
     fileout=open(outputselect, 'a')#open filename, append to end
     
-    for line in writelist:
+    for element in writelist:
         #print( line[0], "writelist element , line element 0")
         #print( line[1], "writelist element , line element 1")
-        for element in line:
-            print ("write element ", element)
-            fileout.write(element)
-            fileout.write(" \n")
+        print ("write element ", element)
+        fileout.write(element)
+        fileout.write(" \n")
             
     fileout.close() #close the file    
     return    
