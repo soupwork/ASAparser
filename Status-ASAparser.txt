@@ -4,6 +4,8 @@ Where am I at right now with my ASA Parser tool?
   loading, sorting, screen and file out are working.
   three next things are adding Network Object Groups, Service Objects, and GUI
   I wish I had the first three working two weeks ago.
+  added an extra field for object type. now the network object can also be a network object group or service object/service object group
+I should rename to nsobj or something similar.
   
 2017 mar 07th
   I can in myself a reluctance to put a lot of code inside a if branch. my code habits are to make a function/method and call that from inside the block. there may be a performance trade-off with readability.
