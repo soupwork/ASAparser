@@ -1,6 +1,10 @@
 Where am I at right now with my ASA Parser tool?
 
-
+2017 mar 23rd
+  loading, sorting, screen and file out are working.
+  three next things are adding Network Object Groups, Service Objects, and GUI
+  I wish I had the first three working two weeks ago.
+  
 2017 mar 07th
   I can in myself a reluctance to put a lot of code inside a if branch. my code habits are to make a function/method and call that from inside the block. there may be a performance trade-off with readability.
   
