@@ -105,11 +105,11 @@ def compareASAs (asa1, asa2):
             outline=asa1obj.name
             print("name ", asa1obj.name, " == ", asa2.sortednetworkobjarray[asa2index].name)
             asa2index+=1 #increment counter
-        elif asa1obj.name < asa2.sortednetworkobjarray[asa2index].name:
+        elif asa1obj.name < asa2.sortednetworkobjarray[asa2index].name:#A<B and A<a
             print("name ", asa1obj.name, " << ", asa2.sortednetworkobjarray[asa2index].name)
             #do not increment counter
-        elif asa1obj.name > asa2.sortednetworkobjarray[asa2index].name:
-            print("name ", asa1obj.name, " << ", asa2.sortednetworkobjarray[asa2index].name)
+        elif asa1obj.name > asa2.sortednetworkobjarray[asa2index].name:#A<B and A<a
+            print("name ", asa1obj.name, " >> ", asa2.sortednetworkobjarray[asa2index].name)
             asa2index+=1 #increment counter  
     return   
 
@@ -184,11 +184,9 @@ def writelines (writelist, outputselect="writeASA-NetObjTest.txt"):
         writelist, outputselect="writeASA-NetObjTest.txt"    """
     print("output select is ", outputselect)
     fileout=open(outputselect, 'a')#open filename, append to end
-    
+    fileout.write("****************", fileout,"****************")
     for element in writelist:
-        #print( line[0], "writelist element , line element 0")
-        #print( line[1], "writelist element , line element 1")
-        print ("write element ", element)
+        
         fileout.write(element)
         fileout.write(" \n")
             

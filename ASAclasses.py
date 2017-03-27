@@ -16,7 +16,12 @@ import copy
 """        
 class ASAobject():
     """ this is the big class
-    ASAobject will have an array(list) of network objects
+    ASAobject will have an array(list) of network objects called networkobjarray(element starts with )
+    ASAobject will have an array(list) of network group objects called netGroupobjarray(element starts with  object-group network )
+    ASAobject will have an array(list) of service/port objects called serviceobjarray (element starts with )
+    ASAobject will have an array(list) of service/port group objects called svcGroupobjarray (element starts with object-group service)
+     (
+    object-group network (starts with )
                 will have a method to load array
                 will have a method to sort array
                 
@@ -59,20 +64,21 @@ class ASAobject():
                     print("object type is ", objtype)
                     tempstring=datasource.readline()
                     while tempstring.startswith(" "):
-                        print("length ", len(tempstring))
+                        #print("length ", len(tempstring))
                         tempstring=tempstring.strip() #remove leading/trailing spaces
-                        print("stripped length ", len(tempstring))
+                        #print("stripped length ", len(tempstring))
                         if (len(tempstring)>1) and (len(paramlist)>objindex):
                             paramlist[objindex]=tempstring #add tempstring to the the list
-                            #paramlist[objindex]=tempstring[:-1] #remove the newline from the end
                         else:
-                            paramlist.append(tempstring[:-1])
+                            paramlist.append(tempstring)
+                            
                         objindex+=1 #increment param list index
                         tempstring=datasource.readline()
                     #end while - load up param list
                     #now create object and add to networkobjarray
 
                     tempnetobj=NetworkObject(objname, objtype, paramlist)
+                    paramlist.clear() #
                     tempnetobj.printobj()                    
                     self.networkobjarray.append(tempnetobj)
                     arrayindex += 1 #increment index
@@ -176,7 +182,7 @@ class NetworkObject():
         self.paramlist = list(paramlist) #copy the list
         #print("new network object, ", name)
         #for field in self.paramlist:
-        #   print( "paramlist  ", field)
+           #print( "paramlist  ", field)
         
     
     def printobj(self):
@@ -187,63 +193,66 @@ class NetworkObject():
         return (self.name)
         
     def onelist (self):
-        """take the name and param list and form into a single list"""
+        """take the name,type, and param list and form into a single list"""
         newlist=[self.name]
+        newlist.append(self.objtype)
+        leftstring,rightstring="init","init"
+        print("len paramlist ", len(self.paramlist))
+        #print("param list ID ", id(self.paramlist)) #verified they are all different objects
         for element in self.paramlist:
-            tempstring=str(element)
-            print("tempstring ", tempstring)
-
-            newlist.append(tempstring)
+            leftstring=str(element)
             
-        #print("length of netobj newlist ", len(newlist))    
+            while rightstring: #keep repeating until rightstring is empty
+                leftstring,rightstring=self.set38chars(leftstring)
+                #print(leftstring, "left string ** right string ", rightstring)
+                #print()
+                newlist.append(leftstring) #write it to the list
+                leftstring=str(rightstring) #move the leftovers and rerun
+            #end while
+            rightstring="init" #re-enable rightstring for next element
+
+        return(newlist) #return a list of strings of the name, type, and details of network objects
+
+    def set38chars(self, teststring):
+        """this function will adjust to 38 chars for print and file output
+            teststring may be greater or less than 38 chars
+            shortstring is the new string. extrastring is the leftovers
+            realisticly, only description will be longer than 38 chars
+            leftstring is trimmed, rightstring is extra"""
+        leftstring=teststring.strip()  
+        stringlen=len(leftstring)
+        rightstring =  "eggs"
+        #print("Length of teststring is ", stringlen)    
+        if stringlen<=38:
+            print("string is less than than 38")
+            leftstring=leftstring.ljust(38)
+            rightstring="" #null out rightstring
+            
+        elif stringlen>38 and leftstring.startswith("description "):#will not execute if desc less than 38
+            #check if starts with description (descriptions will have spaces)
+            print("starts with description")
+            rightstring=leftstring[12:] 
+            leftstring=leftstring[:12]
+            
+        else:#string is greater than 38. find the last space before 38 and trim.
+                #otherwise trim at 38
+            print("string is greater than 38")
+            rightspace=leftstring.rfind(" ",0,38)
+            if rightspace==-1: #rfind returns -1 if " " is not in string
+                print("rightspace true, no spaces found ")
+                rightspace=38
+                
+            rightstring=leftstring[rightspace:]
+            leftstring=leftstring[:rightspace]
+            
         
-        return(newlist)
+        #print(leftstring, " << left string ** right string >> ", rightstring)
+        #print("Length of adjusted teststring is ", len(leftstring))   
+        return(leftstring, rightstring)
         
 ##************* end network object class *************
   
-        
-# *************  begin Network object class *************
-class NetworkObjectGroup():
-    """ ASA Network Object will have a name, description, ip address or network"""
-    """
-    Variables declared at the class level are not default values
-    name = string
-    ipv4 = ip address(host) or network
-    description = string
-    paramlist should be ipv4 then description
-    methods
-    init(name,host,description)
-    """    
-    
-
-    def __init__(self,name,paramlist):
-        self.name=name
-        self.paramlist = list(paramlist) #copy the list
-        #print("new network object, ", name)
-        #for field in self.paramlist:
-        #   print( "paramlist  ", field)
-        
-    
-    def printobj(self):
-        print("obj name ", self.name)
-        for field in self.paramlist:
-            print( "  ", field)
-        return (self.name)
-        
-    def onelist (self):
-        """take the name and param list and form into a single list"""
-        newlist=[self.name]
-        for element in self.paramlist:
-            tempstring=str(element)
-            print("tempstring ", tempstring)
-
-            newlist.append(tempstring)
-            
-        #print("length of netobj newlist ", len(newlist))    
-        
-        return(newlist)
-        
-##************* end network object class *************
+ 
 
 
     
@@ -257,5 +266,6 @@ if __name__=="__main__":
     for netobj in asa1obj.sortednetworkobjarray:
         print("\n  sorted name ",netobj.name)
         newlist=netobj.onelist()
-            
+        print("main newlist", newlist)
+        newlist.clear()
     

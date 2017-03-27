@@ -1,12 +1,13 @@
 Where am I at right now with my ASA Parser tool?
 
+2017 mar 27th
+  things always take longer than i expect. I spent an hour tonight, and four hours on sunday, finding and fixing some problems. (lists not being cleared as expected). I thought i was going to have to do more work on finding the last space in a substring of a string, but it was built in. Thanks python. rfind.
+
 2017 mar 23rd
   loading, sorting, screen and file out are working.
   three next things are adding Network Object Groups, Service Objects, and GUI
   I wish I had the first three working two weeks ago.
-  added an extra field for object type. now the network object can also be a network object group or service object/service object group
-I should rename to nsobj or something similar.
-  
+  added another field to the Network Object (objtype) which will allow me to use service objects, as well as object groups. 
 2017 mar 07th
   I can in myself a reluctance to put a lot of code inside a if branch. my code habits are to make a function/method and call that from inside the block. there may be a performance trade-off with readability.
   
