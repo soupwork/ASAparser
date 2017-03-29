@@ -129,26 +129,7 @@ class ASAobject():
         print("length of sorted array is ",len(sortednetworkobjarray), " elements")
         return() #end Wastefull Sort
  
-    def set38chars(self, teststring):
-        """this function will adjust to 38 chars for print and file output
-            teststring may be greater or less than 38 chars
-            shortstring is the new string. extrastring is the leftovers
-            realisticly, only description will be longer than 38 chars"""
-        teststring=teststring.strip() #if length is 38, don't change anything  
-        stringlen=len(teststring)
-        print("Length of teststring is ", stringlen)    
-        if stringlen<38:
-            #padding=" "*(38-stringlen)
-            #print("Length of padding is ", len(padding))
-            #newstring=teststring+padding
-            teststring=teststring.ljust(38)
-        elif stringlen>8 and teststring.startswith("description"):
-            #check if starts with description
-            print("starts with description")
-            
-        
-        print("Length of adjusted teststring is ", len(teststring))   
-        return(teststring)
+
  
     def printarray(self, testarray):
         """ prints networkobjarray or sortednetworkobjarray"""
@@ -194,10 +175,10 @@ class NetworkObject():
         
     def onelist (self):
         """take the name,type, and param list and form into a single list"""
-        newlist=[self.name]
-        newlist.append(self.objtype)
+        newlist=[self.set38chars(self.name)]
+        newlist.append(self.set38chars(self.objtype))
         leftstring,rightstring="init","init"
-        print("len paramlist ", len(self.paramlist))
+        #print("len paramlist ", len(self.paramlist))
         #print("param list ID ", id(self.paramlist)) #verified they are all different objects
         for element in self.paramlist:
             leftstring=str(element)
@@ -224,19 +205,21 @@ class NetworkObject():
         rightstring =  "eggs"
         #print("Length of teststring is ", stringlen)    
         if stringlen<=38:
-            print("string is less than than 38")
+            #print("string is less than than 38")
             leftstring=leftstring.ljust(38)
             rightstring="" #null out rightstring
+            #alternate method for setting 38 chars
+              #teststring=('{:^38}').format(teststring)#set width=38
             
         elif stringlen>38 and leftstring.startswith("description "):#will not execute if desc less than 38
             #check if starts with description (descriptions will have spaces)
-            print("starts with description")
+            #print("starts with description")
             rightstring=leftstring[12:] 
             leftstring=leftstring[:12]
             
         else:#string is greater than 38. find the last space before 38 and trim.
                 #otherwise trim at 38
-            print("string is greater than 38")
+            #print("string is greater than 38")
             rightspace=leftstring.rfind(" ",0,38)
             if rightspace==-1: #rfind returns -1 if " " is not in string
                 print("rightspace true, no spaces found ")

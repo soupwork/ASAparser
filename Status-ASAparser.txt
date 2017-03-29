@@ -1,5 +1,8 @@
 Where am I at right now with my ASA Parser tool?
-
+2017 mar 29th
+  separated out print to screen and save file.
+  working on compare function. need another file to use for comparing
+  
 2017 mar 27th
   things always take longer than i expect. I spent an hour tonight, and four hours on sunday, finding and fixing some problems. (lists not being cleared as expected). I thought i was going to have to do more work on finding the last space in a substring of a string, but it was built in. Thanks python. rfind.
 
