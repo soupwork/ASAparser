@@ -61,6 +61,7 @@ class ASAobject():
         """        
         paramlist=[] #parameter list
         with open(self.asafilename, 'r') as datasource:
+        
             arrayindex=0
             for dataline in datasource: #each iteration reads a line from file
                 tempstring=dataline
@@ -94,12 +95,12 @@ class ASAobject():
                 # end while-create network object
                 
                 while "object-group network  " in tempstring: #load up parameter list 
-                    #[0:15] is slice that contains obj network
+                    #[0:20] is slice that contains obj network
                     objindex=0
                     typestart=tempstring.find("object network ")
-                    objname=tempstring[typestart+15:-1]#-1 to remove the newline
+                    objname=tempstring[typestart+20:-1]#-1 to remove the newline
                     #print("object name is ", objname)
-                    objtype=tempstring[typestart:typestart+15]
+                    objtype=tempstring[typestart:typestart+20]
                     #print("object type is ", objtype)
                     tempstring=datasource.readline()
                     while tempstring.startswith(" "):
@@ -115,11 +116,11 @@ class ASAobject():
                     #now create object and add to networkobjarray
 
                     tempnetobj=NetworkObject(objname, objtype, paramlist)
-                    paramlist.clear() #
+                   
                     tempnetobj.printobj()                    
                     self.networkobjarray.append(tempnetobj)
                     arrayindex += 1 #increment index
-               
+                    paramlist.clear() #
                 # end while-create network object group
         
                 while "object-group service " in tempstring: #load up parameter list 
@@ -186,7 +187,7 @@ class ASAobject():
         """        
         paramlist=[] #parameter list
         with open(self.asafilename, 'r') as datasource:
-            arrayindex=0
+
             for dataline in datasource: #each iteration reads a line from file
                 tempstring=dataline
                 while "remark " in tempstring: # if "remark" is in tempstring, the entry should be dropped
@@ -219,7 +220,6 @@ class ASAobject():
                     paramlist.clear() #
                     tempnetobj.printobj()                    
                     self.aclobjarray.append(tempnetobj)
-                    arrayindex += 1 #increment index
                
                 # end while-create network object
                 
