@@ -1,5 +1,37 @@
 Where am I at right now with my ASA Parser tool?
-2017 mar 29th
+
+2017 apr 05th 1830 to 1930 and 2000 to 2100
+  worked on ASA Classes. ACLs are added to the mix. not sorted, but then again you don't want them sorted. they are evaluated in order. 
+
+
+
+2017 apr 03rd 2000hrs to 2115
+  nuts. i was going to rewrite my sort routines, then i saw the routine i have originally was exactly the way i was going to rewrite it. 
+  Further testing reveal my sort routine is working. so the problem i am seeing with out-of-order elements must be coming from someplace else. i have an intuition that somewhere i am re-sorting using memory address instead of text value.
+  
+2017 apr 02nd 0630 to 0830
+  i am putting all of my concatenated strings into a single list for writing, to avoid opening/closing a file for each line, or each object. I would prefer to do a single open/write/close. in the future, i'll check to see if i can open a file using an object method, and leave it open when i exit the method, and close it later.  
+  
+  my compareASA method is appending a list to a list. so i have a list of a list of strings. i have the compare function pushing each text element into a list for writing. that is working. however, my sort method is not working. have to have a look at that later.
+    
+  i did find in my reading three good resources about implementing a gui as class objects. They all walked through how to make a gui without class OOP, and then demonstrate the limitations, and demonstrate how much easier it is to implement when you use OOP to begin with.  
+    
+2017 mar 31st 0745 to 0845, 0945 to 1015
+
+  found a case where if object network starts with a space, the name of network object isn't handled correctly
+  maybe I am parsing my strings in a way that could lead to errors. I want to parse on the first space after the keyword. so if an ACL starts with "access-list" and has a space after it, i want to know the index of that space.
+  for the moment, I know all of the network objects will not start with a space in the ASA config. and all ACL objects will start with "access-list ". i would like to use a more robust method. 
+  
+  str.find(substring,startindex,endindex) will return the lowest index of substring, or -1 if not found
+  teststring.find(" ",5,15) should return 15 for a network object
+  teststring.find("object network ") should return 0 for a network object
+  teststring.find ("access-list ")should return 0 for a acl object
+  str.count((substring,startindex,endindex))
+  working on breaking down the access list statements now.
+
+2017 mar 30th 0410 to 0540, 2100 to 2200
+  string formatter. passing values by name verified.
+2017 mar 29th 1845 to 2045
   separated out print to screen and save file.
   working on compare function. need another file to use for comparing
   

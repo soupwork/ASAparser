@@ -16,6 +16,7 @@ import copy
 """        
 class ASAobject():
     """ this is the big class
+    Service Objects and Network Object groups are special cases of the network object
     ASAobject will have an array(list) of network objects called networkobjarray(element starts with )
     ASAobject will have an array(list) of network group objects called netGroupobjarray(element starts with  object-group network )
     ASAobject will have an array(list) of service/port objects called serviceobjarray (element starts with )
@@ -36,7 +37,7 @@ class ASAobject():
         """ init docstring """
         # asafilename="shortASA-NetObjTest.txt" default filename added for testing
         self.networkobjarray=[] #instance list of complete network objects
-        self.netobjGrouparray=[] #instance list of complete network object groups
+        self.netobjgrouparray=[] #instance list of complete network object groups
         self.serviceobjarray=[] #instance list of complete service(port) objects
         self.aclobjarray=[] #instance list of complete ACL objects
         self.sortednetworkobjarray=[] #instance list of complete network objects
@@ -51,7 +52,7 @@ class ASAobject():
     def loadarray (self):
         """ vars
                 asafilename
-                arrayindex
+
                 datasource
                 dataline
                 tempstring
@@ -62,7 +63,6 @@ class ASAobject():
         paramlist=[] #parameter list
         with open(self.asafilename, 'r') as datasource:
         
-            arrayindex=0
             for dataline in datasource: #each iteration reads a line from file
                 tempstring=dataline
                 while "object network " in tempstring: #load up parameter list 
@@ -90,14 +90,14 @@ class ASAobject():
                     paramlist.clear() #
                     tempnetobj.printobj()                    
                     self.networkobjarray.append(tempnetobj)
-                    arrayindex += 1 #increment index
+
                
                 # end while-create network object
                 
-                while "object-group network  " in tempstring: #load up parameter list 
+                while "object-group network " in tempstring: #load up parameter list 
                     #[0:20] is slice that contains obj network
                     objindex=0
-                    typestart=tempstring.find("object network ")
+                    typestart=tempstring.find("object-group network ")
                     objname=tempstring[typestart+20:-1]#-1 to remove the newline
                     #print("object name is ", objname)
                     objtype=tempstring[typestart:typestart+20]
@@ -119,7 +119,6 @@ class ASAobject():
                    
                     tempnetobj.printobj()                    
                     self.networkobjarray.append(tempnetobj)
-                    arrayindex += 1 #increment index
                     paramlist.clear() #
                 # end while-create network object group
         
@@ -144,86 +143,30 @@ class ASAobject():
                     #end while - load up param list
                     #now create object and add to networkobjarray
 
-                    tempnetobj=ServiceObject(objname, objtype, paramlist)
+                    tempnetobj=NetworkObject(objname, objtype, paramlist)
                     paramlist.clear() #
                     tempnetobj.printobj()                    
                     self.serviceobjarray.append(tempnetobj)
-                    arrayindex += 1 #increment index
-               
                 # end while-create object-group service
         
-                while "access-list " in tempstring:
+                if "access-list " in tempstring:
                     #[0:11] is slice that contains access-list 
                     objindex=0
                     typestart=tempstring.find("access-list ")
                     objstring=tempstring[typestart+11:-1]#-1 to remove the newline
-                    print("acl name is ", objname)
-                    objtype=tempstring[typestart:typestart+11]
+                    print("acl name is ", objstring)
+                    #objtype=tempstring[typestart:typestart+11]
                     #print("object type is ", objtype)
                     tempstring=datasource.readline()
                     
-                    #now create object and add to networkobjarray
-
-                    tempnetobj=ACLObject(objstring)
-                    #
-                                        
-                    self.aclobjarray.append(tempnetobj)
-                    arrayindex += 1 #increment index
-               
-                # end while-create network object
+                    #now create object and add to acl object array
+                    tempaclobj=ACLObject(objstring)  #
+                    self.aclobjarray.append(tempaclobj)
+                # end while-create acl object
         return() #end load array
 
 
-    def loadACLarray (self):
-        """ vars
-                asafilename
-                arrayindex
-                datasource
-                dataline
-                tempstring
-                objindex
-                objname
-                objtype
-        """        
-        paramlist=[] #parameter list
-        with open(self.asafilename, 'r') as datasource:
 
-            for dataline in datasource: #each iteration reads a line from file
-                tempstring=dataline
-                while "remark " in tempstring: # if "remark" is in tempstring, the entry should be dropped
-                     tempstring=datasource.readline()
-                     
-                while "access-list " in tempstring: #load up parameter list 
-                    #[0:11] is slice that contains "access-list "
-                    
-                    #"extended" is the separation between the name and the rule
-                    objindex=0
-                    objname=tempstring[15:-1]
-                    objtype=tempstring[:14]
-                    print("object type is ", objtype)
-                    tempstring=datasource.readline()
-                    while tempstring.startswith(" "):
-                        #print("length ", len(tempstring))
-                        tempstring=tempstring.strip() #remove leading/trailing spaces
-                        #print("stripped length ", len(tempstring))
-                        if (len(tempstring)>1) and (len(paramlist)>objindex):
-                            paramlist[objindex]=tempstring #add tempstring to the the list
-                        else:
-                            paramlist.append(tempstring)
-                            
-                        objindex+=1 #increment param list index
-                        tempstring=datasource.readline()
-                    #end while - load up param list
-                    #now create object and add to networkobjarray
-
-                    tempnetobj=ACLObject(objname, objtype, paramlist)
-                    paramlist.clear() #
-                    tempnetobj.printobj()                    
-                    self.aclobjarray.append(tempnetobj)
-               
-                # end while-create network object
-                
-        return() #end load ACL array
 
         
     def wastefullsort(self, networkobjarray, sortednetworkobjarray):
@@ -277,7 +220,7 @@ class ASAobject():
         """ prints networkobjarray or sortednetworkobjarray"""
         print("inside printarray")
         for testobject in testarray:
-             print ("testname ", testobject.name)
+             print (testobject.name)
              
         return  #end print array     
 
@@ -307,7 +250,7 @@ class NetworkObject():
         #print("new network object, ", name)
         #for field in self.paramlist:
            #print( "paramlist  ", field)
-        
+        return #end init
     
     def printobj(self):
         print("obj name ", self.name)
@@ -316,7 +259,7 @@ class NetworkObject():
             print( "  ", field)
         return (self.name)
         
-    def onelist (self):
+    def onelist(self):
         """take the name,type, and param list and form into a single list"""
         
         newlist=[]
@@ -338,6 +281,7 @@ class NetworkObject():
             #end while
             rightstring="init" #re-enable rightstring for next element
         #print("onelist newlist ", newlist)
+        newlist.append("\n") #add a blank line to the end of the list
         return(newlist) #return a list of strings of the name, type, and details of network objects
 
     def set38chars(self, teststring):
@@ -395,87 +339,22 @@ class ACLObject():
         init(name,type)
     """    
     def __init__(self, aclstring):
-        #self.name=name
+        self.aclstring=aclstring
+        self.name=aclstring
         #self.objtype=objtype
         #self.paramlist = list(paramlist) #copy the list
         #print("new network object, ", name)
         #for field in self.paramlist:
            #print( "paramlist  ", field)
         pass
+        return #end init
+  
+       
     
-    def printobj(self):
-        print("obj name ", self.name)
-        print("obj type ", self.objtype)
-        for field in self.paramlist:
-            print( "  ", field)
-        return (self.name)
-    """        
-    def onelist (self):
-        "" "take the name,type, and param list and form into a single list"" "
-        
-        newlist=[]
-        if len(self.name)<38:
-          newlist.append(self.name.ljust(38))
-        
-        newlist.append(self.objtype.ljust(38))
-        leftstring,rightstring="init","init"
-        
-        for element in self.paramlist:
-            leftstring=str(element)
-            
-            while rightstring: #keep repeating until rightstring is empty
-                leftstring,rightstring=self.set38chars(leftstring)
-                #print(leftstring, "left string ** right string ", rightstring)
-                #print()
-                newlist.append(leftstring) #write it to the list
-                leftstring=str(rightstring) #move the leftovers and rerun
-            #end while
-            rightstring="init" #re-enable rightstring for next element
-        print("onelist newlist ", newlist)
-        return(newlist) #return a list of strings of the name, type, and details of network objects
-
-    def set38chars(self, teststring):
-        "" "this function will adjust to 38 chars for print and file output
-            teststring may be greater or less than 38 chars
-            shortstring is the new string. extrastring is the leftovers
-            realisticly, only description will be longer than 38 chars
-            leftstring is trimmed, rightstring is extra"" "
-        leftstring=teststring.strip()  
-        stringlen=len(leftstring)
-        rightstring =  "eggs"
-        #print("Length of teststring is ", stringlen)    
-        if stringlen<=38:
-            #print("string is less than than 38")
-            leftstring=leftstring.ljust(38)
-            rightstring="" #null out rightstring
-            #alternate method for setting 38 chars
-              #teststring=('{:^38}').format(teststring)#set width=38
-            
-        elif stringlen>38 and leftstring.startswith("description "):#will not execute if desc less than 38
-            #check if starts with description (descriptions will have spaces)
-            #print("starts with description")
-            rightstring=leftstring[12:] 
-            leftstring=leftstring[:12]
-            
-        else:#string is greater than 38. find the last space before 38 and trim.
-                #otherwise trim at 38
-            #print("string is greater than 38")
-            rightspace=leftstring.rfind(" ",0,38)
-            if rightspace==-1: #rfind returns -1 if " " is not in string
-                print("rightspace true, no spaces found ")
-                rightspace=38
-                
-            rightstring=leftstring[rightspace:]
-            leftstring=leftstring[:rightspace]
-            
-        
-        print(leftstring, " << left string ** right string >> ", rightstring)
-        #print("Length of adjusted teststring is ", len(leftstring))   
-        return(leftstring, rightstring)
         
 ##************* end ACL object class *************
   
-"" " 
+""" 
  Access list Object 
         --------------------------------------------------------------------------------------------------------------
         "access-list"+ space + ACL name (interface name could be very long)+ space + "extended" (or "remark") + space 
@@ -502,11 +381,79 @@ class ACLObject():
 ##************* end ACL object class *************
     
 if __name__=="__main__":
+    templist=[]
+    datalist=[]
+    
+    def writedata (writelist):
+        """write to a file. asa_outfile is filename
+            writelist is list of lines to be appended to file.
+        """
+        asa_outfile="asa_outfile.txt"
+        fileout=open(asa_outfile, 'a')#open filename, append to end
+    
+        for element in writelist:
+            #print("writelist element ", element, "type ", type(element))
+            fileout.write(element+ "\n")
+            #fileout.write("\n")
+            
+        
+        fileout.close() #close the file     
+        return  
+    
+    
     print("running __main__ ASAclassesFeb")
     asa1obj=ASAobject("ASA1","DC1-ASA-01_2017mar29th0955hrs.txt") #create the ASAobject
     asa1obj.loadarray() #execute the load array function 
-    print("length of asa object list is ", len(asa1obj.networkobjarray))
+       
+    asa1obj.wastefullsort(asa1obj.networkobjarray,asa1obj.sortednetworkobjarray)
+    asa1obj.wastefullsort(asa1obj.netobjgrouparray,asa1obj.sortedNetObjGrouparray)   
+    asa1obj.wastefullsort(asa1obj.serviceobjarray,asa1obj.sortedServiceObjarray)
+    #asa1obj.wastefullsort(asa1obj.aclobjarray,asa1obj.sortedACLobjarrayobjarray)
     
-    asa1obj.wastefullsort(asa1obj.networkobjarray,asa1obj.sortednetworkobjarray)  
-    asa1obj.printarray(asa1obj.sortednetworkobjarray)
+    #asa1obj.printarray(asa1obj.sortednetworkobjarray)
+    #asa1obj.printarray(asa1obj.sortedNetObjGrouparray)
+    #asa1obj.printarray(asa1obj.sortedServiceObjarray)
+    asa1obj.printarray(asa1obj.aclobjarray)
+    #asa1obj.printarray(asa1obj.sortedACLobjarray)
     
+    for element in asa1obj.sortednetworkobjarray: #element is a network object
+        templist.append(" **** this is the sorted Network Object Array ***** ")
+        templist=element.onelist()
+        for inside in templist: #inside will be a string
+            #print("inside element ", inside, " type ", type(inside))
+            datalist.append(inside)
+    
+    #writedata(datalist)
+ 
+    templist.append(" **** this is the sorted Network Object Groups ***** ")
+    for element in asa1obj.sortedNetObjGrouparray: #element is a network object
+        templist=element.onelist()
+        for inside in templist: #inside will be a string
+            #print("inside element ", inside, " type ", type(inside))
+            datalist.append(inside)
+    
+    #writedata(datalist)
+    
+    templist.append(" **** this is the sorted Service Object Array ***** ")
+    for element in asa1obj.sortedServiceObjarray: #element is a network object
+        templist=element.onelist()
+        for inside in templist: #inside will be a string
+            #print("inside element ", inside, " type ", type(inside))
+            datalist.append(inside)
+    
+    #writedata(datalist)
+    
+    templist.append(" **** this is the un-sorted ACL Object Array ***** ")
+    for inside in asa1obj.aclobjarray: #element is a ACL object
+        #ACL obj array is already a single list of strings
+        #print("inside element ", inside.aclstring)
+        checkstring=inside.aclstring
+        #print("Checkstring", checkstring)
+        #print(checkstring.find("remark"))
+        if checkstring.find("remark")==-1:
+            print("ACL not a remark")
+            datalist.append(inside.aclstring)
+    
+    writedata(datalist)
+    
+    #end test main ASAclasses
