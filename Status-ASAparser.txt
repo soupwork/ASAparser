@@ -1,7 +1,37 @@
 Where am I at right now with my ASA Parser tool?
+2017 apr 18th
+  redoing some stuff.
+  compareASAs should call CompareObjList. passing in two network/service object lists.
+  
+  compareObjList should recieve in two lists of network/service objects
+  compareObjList should call compareObjElements, passing in two network/service objects
+    compareObjList should have two boolean variables, endlist1 and endlist2. if,after increment, len(list1)=count1, endlist1 is true.
+    condition for entering loop is "while (not endlist1) or (not endlist2)"
+      while endlist1<<list1 is exhausted, but list2 is active
+      while endlist2<<list 2 is exhausted, list1 may or may not be exhausted
+      
+  
+  compareObjElements should receive two objects. 
+  
+  
+2017 apr 16th 1100 to 1130
+  In thinking about the compare functions, it occurs to me that there are two different kinds of important compares. My original compare function lists the complete list of objects next to the corresponding list of objects, flagging differences. it only compares the names. if a change is made to the IP Address or Description, it will not be flagged. It would also be helpful to have a "diffobj" function, which only puts out the differences and does not output the things that are the same.
+
+2017 apr 14th 
+  working on redoing compare methods. i am not going to iterate through for loops. after some "deep thought" i realized it would be better for me to use a sentinal (endcompare), set it false, and make it true when i am done. the problem with iterating through the for/each on one or the other list, is the iteration stops until the other side is complete. I could have a blank, or multiple blanks, on either side.
+  
+  also changing test script to make testing more automated. select '#1' will call "testthis" method.
+  
+  I am torn between making methods/functions too long and complicated, and making them too short having too complex a cascade of this function calls that function.
+
+
+2017 apr 09th 0720 to 
+  on thursday last week, i have the ASAclasses working well enough that i can put in a single asa file and have it output to a file, the sorted list of network and service objects, as well as the acl's. next step is bringing it back to the main program, and doing a simple gui. 
+  
+  For my compare functions, if both names are the same, i want to print both objects next to each other. if the left name comes first alphabetically, I want it to print the left object and have a blank on the right. if the right object comes first alphabetically, i want to print a blank left object next to the right object. I would also like to avoid having the list run away, where i print all of the left objects at once with blanks, then all of the right objects at once with blanks. i'm just working on the network objects now. once that is working right, doing it for groups and service objects should be easier.
 
 2017 apr 05th 1830 to 1930 and 2000 to 2100
-  worked on ASA Classes. ACLs are added to the mix. not sorted, but then again you don't want them sorted. they are evaluated in order. 
+  worked on ASA Classes. ACLs are added to the mix. not sorted, but then again you don't want them sorted. they are evaluated in order. I would like to add a sequence number
 
 
 

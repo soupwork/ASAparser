@@ -13,7 +13,9 @@ import copy
     Service Objects
         ASA TCP and UDP ports
     the working version is "ASAclassesMonth"  while the backup versions are ASAclassesYYYYmmmDD 
-"""        
+"""
+#copyright (c)2017 Douglas J. Sheehan, Doug Sheehan IT Consulting. Free to use. Credit where due please.
+        
 class ASAobject():
     """ this is the big class
     Service Objects and Network Object groups are special cases of the network object
@@ -32,7 +34,7 @@ class ASAobject():
     """
     ASAnumber=0 #this is a class attribute, shared by all instances, increments each time a new ASAobject is created.
     
-    def __init__ (self, name, asafilename="shortASA-NetObjTest1.txt"): 
+    def __init__ (self, name, asafilename="DC2-ASA-01_2017apr06th-1000hrs.txt"): 
     
         """ init docstring """
         # asafilename="shortASA-NetObjTest.txt" default filename added for testing
@@ -90,7 +92,6 @@ class ASAobject():
                     paramlist.clear() #
                     tempnetobj.printobj()                    
                     self.networkobjarray.append(tempnetobj)
-
                
                 # end while-create network object
                 
@@ -153,7 +154,8 @@ class ASAobject():
                     #[0:11] is slice that contains access-list 
                     objindex=0
                     typestart=tempstring.find("access-list ")
-                    objstring=tempstring[typestart+11:-1]#-1 to remove the newline
+                    #objstring=tempstring[typestart+11:-1]#-1 to remove the newline
+                    objstring=tempstring[:-1]#-1 to remove the newline
                     print("acl name is ", objstring)
                     #objtype=tempstring[typestart:typestart+11]
                     #print("object type is ", objtype)
@@ -211,7 +213,6 @@ class ASAobject():
             
         #end for loop    
         print("end wastefull sort")
-        print("length of sorted array is ",len(sortednetworkobjarray), " elements")
         return() #end Wastefull Sort
  
 
@@ -331,21 +332,19 @@ class ACLObject():
         will have a full-string, name, index, type (permit/deny) TCP/UDP, source, destination, ports and parameter list
         Variables declared at the class level are not default values
         name = string
-        type = string (object network, object-group network, object service, object-group service)
-        ipv4 = ip address(host) or network
-        description = string
-        paramlist should be ipv4 then description
-        methods
-        init(name,type)
+        aclstring = string (complete acl string)
+        seq = int >sequence number - ACLs are evaluated in order
+        could add source, dest, sourceport and destport in the future
+       
     """    
     def __init__(self, aclstring):
         self.aclstring=aclstring
-        self.name=aclstring
         #self.objtype=objtype
         #self.paramlist = list(paramlist) #copy the list
-        #print("new network object, ", name)
-        #for field in self.paramlist:
-           #print( "paramlist  ", field)
+        typestart=aclstring.find("access-list ")
+        typeend=aclstring.find(" extended ")
+        self.name=aclstring[typestart+11:typeend]#
+        self.seq=0
         pass
         return #end init
   
@@ -378,7 +377,7 @@ class ACLObject():
                     network object "object" 
                 ----------------------------------------------------------------------------------------------------
 """                
-##************* end ACL object class *************
+##************* end ACL object description *************
     
 if __name__=="__main__":
     templist=[]
@@ -388,9 +387,9 @@ if __name__=="__main__":
         """write to a file. asa_outfile is filename
             writelist is list of lines to be appended to file.
         """
-        asa_outfile="asa_outfile.txt"
+        asa_outfile="PARSED-DC1-ASA-01_2017apr06th-1000hrs.txt"
         fileout=open(asa_outfile, 'a')#open filename, append to end
-    
+        fileout.write(asa_outfile + "\n"+"\n")
         for element in writelist:
             #print("writelist element ", element, "type ", type(element))
             fileout.write(element+ "\n")
@@ -402,28 +401,22 @@ if __name__=="__main__":
     
     
     print("running __main__ ASAclassesFeb")
-    asa1obj=ASAobject("ASA1","DC1-ASA-01_2017mar29th0955hrs.txt") #create the ASAobject
+    asa1obj=ASAobject("ASA1","DC1-ASA-01_2017apr06th-1000one hrs.txt") #create the ASAobject
     asa1obj.loadarray() #execute the load array function 
        
     asa1obj.wastefullsort(asa1obj.networkobjarray,asa1obj.sortednetworkobjarray)
     asa1obj.wastefullsort(asa1obj.netobjgrouparray,asa1obj.sortedNetObjGrouparray)   
     asa1obj.wastefullsort(asa1obj.serviceobjarray,asa1obj.sortedServiceObjarray)
-    #asa1obj.wastefullsort(asa1obj.aclobjarray,asa1obj.sortedACLobjarrayobjarray)
     
-    #asa1obj.printarray(asa1obj.sortednetworkobjarray)
-    #asa1obj.printarray(asa1obj.sortedNetObjGrouparray)
-    #asa1obj.printarray(asa1obj.sortedServiceObjarray)
     asa1obj.printarray(asa1obj.aclobjarray)
-    #asa1obj.printarray(asa1obj.sortedACLobjarray)
     
+    # this part creates a single list from the sorted arrays - for writing to a file
     for element in asa1obj.sortednetworkobjarray: #element is a network object
         templist.append(" **** this is the sorted Network Object Array ***** ")
         templist=element.onelist()
         for inside in templist: #inside will be a string
-            #print("inside element ", inside, " type ", type(inside))
             datalist.append(inside)
-    
-    #writedata(datalist)
+
  
     templist.append(" **** this is the sorted Network Object Groups ***** ")
     for element in asa1obj.sortedNetObjGrouparray: #element is a network object
@@ -431,8 +424,7 @@ if __name__=="__main__":
         for inside in templist: #inside will be a string
             #print("inside element ", inside, " type ", type(inside))
             datalist.append(inside)
-    
-    #writedata(datalist)
+
     
     templist.append(" **** this is the sorted Service Object Array ***** ")
     for element in asa1obj.sortedServiceObjarray: #element is a network object
@@ -440,20 +432,15 @@ if __name__=="__main__":
         for inside in templist: #inside will be a string
             #print("inside element ", inside, " type ", type(inside))
             datalist.append(inside)
-    
-    #writedata(datalist)
+
     
     templist.append(" **** this is the un-sorted ACL Object Array ***** ")
     for inside in asa1obj.aclobjarray: #element is a ACL object
         #ACL obj array is already a single list of strings
-        #print("inside element ", inside.aclstring)
         checkstring=inside.aclstring
-        #print("Checkstring", checkstring)
-        #print(checkstring.find("remark"))
-        if checkstring.find("remark")==-1:
-            print("ACL not a remark")
+        if checkstring.find("remark")==-1: #don't write the remarks in the ACL list
             datalist.append(inside.aclstring)
-    
+        #else: decide what do to with remarks
     writedata(datalist)
     
     #end test main ASAclasses

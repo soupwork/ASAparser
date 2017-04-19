@@ -5,17 +5,20 @@
     ASA objects are defined in ASAclasses
     
 """
+#copyright (c)2017 Douglas J. Sheehan, Doug Sheehan IT Consulting. Free to use. Credit where due please.
 
 from ASAclasses import ASAobject, NetworkObject
 
-asa_filename1="shortASA-NetObjTest1.txt"
-asa_filename2="shortASA-NetObjTest1.txt"
+asafilename1="shortASA-NetObjTest1.txt"
+asafilename2="shortASA-NetObjTest1.txt"
 asalist=[]#this is a list of asa objects.
 blankparamlist=[" "*38,]
 blanknetobj=NetworkObject("blank", "object network", blankparamlist)
+asaindex=0 
 
 def inputASAdetails():
-    """user input /filename to be used to create an ASA object"""
+    """user input /filename to be used to create an ASA object
+        Called from loadASAs """
 
     print("lets create an ASA object")
     print("what would you like to call your ASA object [default asa01]")
@@ -32,12 +35,21 @@ def inputASAdetails():
     return(asaname,asa_filename1)
     
     
-def loadASAs():
-    asaname,asa_filename1=inputASAdetails()
-    asalist.append(ASAobject(asaname,asa_filename1)) #create the ASAobject through input and append to array
-    asalist[asaindex].loadarray() #execute the load array function  
-    print("length of asa object list is ", len(asalist[asaindex].networkobjarray))
+def loadASAs(asalist, asaname="promptuser", asafilename=asafilename1):
+    # is asalist global? if i add two asaobjects to asalist[], will they be indexed?
+    if asaname == "promptuser":
+        asaname,asa_filename1=inputASAdetails()
+        
+    asaindex=len(asalist) #length before append will be index after append
+    asalist.append(ASAobject(asaname,asafilename)) #create the ASAobject through input and append to array
+     
+    asalist[asaindex].loadarray() #execute the load array function inside ASA object class
+    #if len
     asalist[asaindex].wastefullsort(asalist[asaindex].networkobjarray,asalist[asaindex].sortednetworkobjarray)
+    asalist[asaindex].wastefullsort(asalist[asaindex].netobjgrouparray,asalist[asaindex].sortedNetObjGrouparray)
+    asalist[asaindex].wastefullsort(asalist[asaindex].serviceobjarray,asalist[asaindex].sortedServiceObjarray)
+    
+    
     #printOneASA(asalist[asaindex])
     return() #end loadASAs   
 
@@ -104,7 +116,7 @@ def saveOneASA(asaobj):
     for netobj in asaobj.sortednetworkobjarray: 
         print("\n  sorted name for writing ",netobj.name)
         print("\n  sorted type for writing ",netobj.objtype)
-        writelines(netobj.onelist(),outfile) 
+        writedata(netobj.onelist(),outfile) 
     
     return()      
   
@@ -118,50 +130,70 @@ def saveAllASAs():
         for netobj in element.sortednetworkobjarray: 
             print("\n  sorted name for writing ",netobj.name)
             print("\n  sorted type for writing ",netobj.objtype)
-            writelines(netobj.onelist(),outfile) #onelist will take name,type,and params and put into one list        
+            writedata(netobj.onelist(),outfile) #onelist will take name,type,and params and put into one list        
     return()  
     
-def writelines (writelist, outputselect="writeASA-NetObjTest.txt"):
-    """write to a file. outputselect is filename
-        writelist is list of lines to be appended to file."""
-    print("output select is ", outputselect)
-    fileout=open(outputselect, 'a')#open filename, append to end
-    
+def writedata (writelist):
+    """write to a file. asa_outfile is filename
+       writelist is list of lines to be appended to file.
+    """
+    asa_outfile="asa_outfile.txt"
+    fileout=open(asa_outfile, 'a')#open filename, append to end
+    fileout.write(asa_outfile + "\n"+"\n")
     for element in writelist:
+        fileout.write(element+ "\n")
         
-        fileout.write(element)
-        fileout.write(" \n")
-            
-    fileout.close() #close the file  
+    fileout.close() #close the file     
     return  
     
+def makeOneLine(leftstring="*",midstring=" ",rightstring="*"):
+    
+    if leftstring != rightstring:
+        midstring="****"
+        
+    singlestring=('{:^38}{}{:^38}').format(leftstring,midstring,rightstring)
+    print("make one line single string is \n", singlestring)
+    return(singlestring)
+#end make One Line- make one string from three Strings    
+    
 def twoListToOneList(leftlist=blankparamlist, midobj="    ", rightlist=blankparamlist):
+    """ left and right elements in left and right lists should be converted to a single string in this method,
+        and return as a single list"""
     mergelist=[] #
     count=0
-    lenleftlist=len(leftlist)#if length is less than 3, it is blank
+    lenleftlist=len(leftlist)#if length is less than 3, it is blank. this is number of list entries in the list.
     lenrightlist=len(rightlist)
     shortlen=len(leftlist)
+    biglist=rightlist #it is a guess
     
-
+    #are both lists the same size? do I need to add blank lines?
     if lenrightlist<shortlen :
         shortlen=len(rightlist)
-        print("shortlength is ", shortlen)
+        biglist=leftlist #i must have guessed wrong
         
-    print("twolist", leftlist, midobj,rightlist)
-    if (lenleftlist>1) and (lenrightlist>1):#no blanks
-        for ndex in range(len(rightlist)): #will count starting at 0
-            print("leftlist ", leftlist[count])
-            tempstring=str(leftlist[count])
+    print("shortlength is ", shortlen)
+    
+    if (lenleftlist>1) and (lenrightlist>1):#no blanks-both lists are real network objects
+        for count in range(len(biglist)): #iterate through the larger list
+            if count<shortlen:
+                tempstring=makeOneLine(leftlist[count],"    ",rightlist[count])
+            elif biglist==rightlist:
+                tempstring=makeOneLine(rightstring=rightlist[count])
+            else: #biglist = leftlist
+                tempstring=makeOneLine(leftstring=leftlist[count])
+                
             print(tempstring, "tempstring, twoObjToOneList")
             mergelist.append(tempstring)
-    else:
+    else: #one list is blank
         for ndex in range(len(leftlist)): #will count starting at 0
             print("leftlist ", leftlist[count])
             tempstring=str(leftlist[count])
             print(tempstring, "tempstring, twoObjToOneList")
+            count += 1
             mergelist.append(tempstring)
-  
+
     return(mergelist)
+#end two Lists of Strings to One List of Strings
     
 def twoListObjToOneList(leftobj=blanknetobj, midobj="    ", rightobj=blanknetobj):
     """pass in one or two objects
@@ -172,11 +204,12 @@ def twoListObjToOneList(leftobj=blanknetobj, midobj="    ", rightobj=blanknetobj
     mergelist=[] #
     singlestring=" " #
     count=0
+    print (" twoListObjToOneList ")
     if leftobj.name=="blank":
         rightlist=rightobj.onelist()
         print("blank left ")
         mergelist=twoListToOneList(rightlist=rightlist)
-        twoListToOneList
+       
     elif rightobj.name=="blank":
         print("blank right ")
         leftlist=leftobj.onelist()
@@ -185,17 +218,48 @@ def twoListObjToOneList(leftobj=blanknetobj, midobj="    ", rightobj=blanknetobj
         print("no blank ")
         leftlist=leftobj.onelist()
         rightlist=rightobj.onelist()
-        mergelist=twoListToOneList(rightlist=rightlist)
-    singlestring=('{:^38}{}{:^38}').format(leftobj.name,midobj,rightobj.name)
-    print("single name string \n", singlestring)
-    
-    return()    
+        mergelist=twoListToOneList(leftlist=leftlist, rightlist=rightlist)
+        
+    #confirmed each element returned in mergelist is a string
+    #print(type(line), ">>>>", line)
+    return(mergelist)    
+#end twoListObj to One List of Strings
 
+def compareObjLists (testlist1, testlist2):
+    """ INPUT two object lists, OUTPUT to Screen,  
+    """
+    mergelist=[]
+    list1count=0
+    list1len=len(testlist1)
+    list2count=0
+    list2len=len(testlist2)
+    endcompare = false 
+    while not endcompare:
+        if testlist1[list1count].name == testlist2[list2count].name :
+            """strings are the same, check length and put them in a single line""" 
+            print("name ", testlist1[list1count].name, " == ", testlist2[list2count].name)
+            #mergelist=twoListObjToOneList(testlist1[list1count].name," == ",testlist2[list2count].name)
+            #print("compare fn, mergelist = " , mergelist)
+            #increment both counters
+                
+        elif testlist1[list1count].name < testlist1[list1count].name:#A<B and A<a and B<a
+            print("name ", testlist1[list1count].name, " << ", testlist2[list2count].name)
+            #mergelist.append(twoListObjToOneList(testlist1[list1count]," << ",blank))
+            #print("compare fn, mergelist < " , mergelist)
+            #do not increment counter
+                
+        elif testlist1[list1count].name > testlist1[list1count].name:#A<B and A<a
+            print("name ", testlist1[list1count].name, " >> ", testlist2[list2count].name)
+            #mergelist.append(twoListObjToOneList(asa1obj," == ",asa2.sortednetworkobjarray[asa2index]))
+            #print("compare fn, mergelist >" , mergelist)
+         if 
+    # mergelist is now a big list of (list of strings) 
 
+    return()
+#end Compare Two Object Lists    
     
-    
-def compareASAs (asa1, asa2):  
-    """compare network objects by name
+def compareASAs (asa1, asa2):  #compare complete ASAs, write simularities and differences to a file
+    """compare network objects by name. INPUT two ASA objects, OUTPUT file write
         first check for equality
         second check for length
         third concatenate two strings into a single line/string
@@ -204,68 +268,49 @@ def compareASAs (asa1, asa2):
         rightstring is asa2"""
     asa2index=0 #counter
     mergelist=[] #list containing name, and network object fields
+    writelist=[] #list of strings for writelines_
     # asa1"a" < asa2"b"
     # asa1"A" < asa2"a"
     for asa1obj in asa1.sortednetworkobjarray:
         if asa1obj.name == asa2.sortednetworkobjarray[asa2index].name:
             """strings are the same, check length and put them in a single line""" 
             print("name ", asa1obj.name, " == ", asa2.sortednetworkobjarray[asa2index].name)
-            mergelist.append(twoListObjToOneList(asa1obj," == ",asa2.sortednetworkobjarray[asa2index]))
-            print(mergelist)
-            mergelist.clear()
+            mergelist=twoListObjToOneList(asa1obj," == ",asa2.sortednetworkobjarray[asa2index])
+            #print("compare fn, mergelist = " , mergelist)
             asa2index+=1 #increment counter
+            
         elif asa1obj.name < asa2.sortednetworkobjarray[asa2index].name:#A<B and A<a
             print("name ", asa1obj.name, " << ", asa2.sortednetworkobjarray[asa2index].name)
             mergelist.append(twoListObjToOneList(asa1obj," == ",asa2.sortednetworkobjarray[asa2index]))
-            print(mergelist)
-            mergelist.clear()
+            #print("compare fn, mergelist < " , mergelist)
             #do not increment counter
+            
         elif asa1obj.name > asa2.sortednetworkobjarray[asa2index].name:#A<B and A<a
             print("name ", asa1obj.name, " >> ", asa2.sortednetworkobjarray[asa2index].name)
             mergelist.append(twoListObjToOneList(asa1obj," == ",asa2.sortednetworkobjarray[asa2index]))
-            print(mergelist)
-            mergelist.clear()
+            #print("compare fn, mergelist >" , mergelist)
             asa2index+=1 #increment counter  
+    # mergelist is now a big list of (list of strings) 
+    for listelement in mergelist:
+        for textelement in listelement:
+            writelist.append(textelement)
+    
+    writedata(writelist)
+    writelist.clear()
     return   
-
-def testCompareASAs():
-    """this function will create two ASA objects based on test values. 
-        then it will call the compare function
-        then the print/save function"""
-    #create ASA1
-    newlist=[] #list containing name, and network object fields
-    asalist.append(ASAobject("ASA1",asa_filename1)) #create the ASAobject 
-    asalist[0].loadarray() #execute the load array function  
-    print("length of asa object list is ", len(asalist[0].networkobjarray))
-    asalist[0].wastefullsort(asalist[0].networkobjarray,asalist[0].sortednetworkobjarray)
-    #create ASA2
-    asalist.append(ASAobject("ASA2",asa_filename2)) #create the ASAobject 
-    asalist[1].loadarray() #execute the load array function  
-    print("length of asa object list is ", len(asalist[1].networkobjarray))
-    asalist[1].wastefullsort(asalist[1].networkobjarray,asalist[1].sortednetworkobjarray)
-    #now i have two asa objects, sorted. 
-    
-    outputselect="writeASA-NetObjTest.txt"
-    #run the compare function
-    compareASAs(asalist[0], asalist[1])
-    
-    
-    """ write function is working 
-    for element in asalist[0].sortednetworkobjarray:
-        newlist.append(element.onelist())
-        #each newlist element is a list of strings: name, ip, description
-        
-    writelines(newlist)
-    #write function is working
-    """
-        
-
-    
-    return()
-    
+ #end CompareASAs
  
-
-
+def testthis():
+    """this is a function to make testing a little quicker
+        ASA1 and ASA2 
+        """
+    asafilename1="shortASA-NetObjTest1.txt"
+    asafilename2="shortASA-NetObjTest1a.txt"
+    #load ASAs loads the object lists as well as the sorted object list for network, group, service, and acl.
+    loadASAs(asalist, "asa01", asafilename1)
+    loadASAs(asalist, "asa02", asafilename2)
+    #two asa's loaded. check for differences
+    compareObjLists(asalist[0].sortednetworkobjarray, asalist[1].sortednetworkobjarray)
 
 
     
@@ -298,19 +343,19 @@ if __name__=="__main__":
         asaindex=len(asalist)
         if maininput=='l': #loadASA object into asalist
             #load object will always append
-            loadASAs()
+            loadASAs(asalist)
             
         elif maininput=='d': #display
             if len(asalist)<1:
                 print("no ASA's loaded")
-                loadASAS()
+                loadASAS(asalist)
             displayASAnames()
             
             #
         elif maininput=='s': #save file
             if len(asalist)<1:
                 print("no ASA's loaded")
-                loadASAS()
+                loadASAS(asalist)
             saveAllASAs()
             
             #    
@@ -323,7 +368,7 @@ if __name__=="__main__":
             print("quit is true")
         #*******************************************    
         elif maininput=="1": #if maininput is number one, do a test on the thing i'm working on right now
-            print(testCompareASAs()) 
+            testthis() 
         #********************************************        
         elif maininput=="t": #run the sequence test.
             pass
