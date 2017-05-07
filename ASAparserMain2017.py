@@ -223,40 +223,113 @@ def twoListObjToOneList(leftobj=blanknetobj, midobj="    ", rightobj=blanknetobj
     #confirmed each element returned in mergelist is a string
     #print(type(line), ">>>>", line)
     return(mergelist)    
-#end twoListObj to One List of Strings
+#end twoListObj to One List of Strings * return mergelist[]
+
+
+def compareObjElements(testobj1, testobj2):
+    """INPUT two network objects, OUTPUT boolean 'sameobj' and text "obj1/obj2"
+        called from compare object lists
+        check ID of object
+    """
+    sameobj=True
+    templist1=[]
+    templist2=[]
+    textID="" #this will hold the alphabetically first name
+    
+    if testobj1.name != testobj2.name:
+        sameobj=False
+        print (testobj1.name, " NOT EQUAL ", testobj2.name, "in compareobjelements")
+        if testobj1.name < testobj2.name: #testobj1 is alpha first
+            textID="testobj1"
+            
+        if testobj1.name > testobj2.name: #testobj2 is alpha first
+            textID="testobj2"    
+    
+    
+    elif testobj1.name == testobj2.name:
+        sameobj=True
+        print (testobj1.name, " == ", testobj2.name, "in compareobjelements")  
+        textID="testobj1"
+        
+    print("same obj status is ", sameobj)   
+    print("alpha first textID is ", textID) 
+    return(sameobj,textID)
+#end compare two object elements *return sameobj, textID="testobj1" or "testobj2"    
 
 def compareObjLists (testlist1, testlist2):
-    """ INPUT two object lists, OUTPUT to Screen,  
+    """ INPUT two object lists, OUTPUT to Screen and file  
     """
+    templist=[]
     mergelist=[]
+    mergecount=0
     list1count=0
-    list1len=len(testlist1)
     list2count=0
-    list2len=len(testlist2)
-    endcompare = false 
+    textID=""
+    endcompare = False 
     while not endcompare:
-        if testlist1[list1count].name == testlist2[list2count].name :
-            """strings are the same, check length and put them in a single line""" 
-            print("name ", testlist1[list1count].name, " == ", testlist2[list2count].name)
-            #mergelist=twoListObjToOneList(testlist1[list1count].name," == ",testlist2[list2count].name)
-            #print("compare fn, mergelist = " , mergelist)
-            #increment both counters
+        if (list1count<len(testlist1)) and (list2count<len(testlist2)):
+            print("load two object elements inside compare lists")
+            sameobj,textID=compareObjElements(testlist1[list1count],testlist2[list2count])
+        print(" Compare Obj Lists TextID is ", textID)
+        if sameobj:
+            templist=(twoListObjToOneList(leftobj=testlist1[list1count], midobj=" == ",rightobj=testlist1[list2count]))
+            for element in templist:
+                print("compare obj list element- same obj", element)
+                mergelist.append(element)
+            
+            list1count += 1
+            list2count += 1
+            print("list1count ", list1count, "list 2 count ", list2count)
+            
+        elif textID=="testobj1"and list1count < len(testlist1):
+            templist=(twoListObjToOneList(leftobj=testlist1[list1count]))
+            for element in templist:
+                print("compare obj list element- diff obj", element)
+                mergelist.append(element)
+            list1count += 1
+         
+        elif textID=="testobj2" and list2count < len(testlist2):
+            templist=(twoListObjToOneList(rightobj=testlist2[list2count]))
+            for element in templist:
+                print("compare obj list element- diff obj", element)
+                mergelist.append(element)    
+            list2count += 1
                 
-        elif testlist1[list1count].name < testlist1[list1count].name:#A<B and A<a and B<a
-            print("name ", testlist1[list1count].name, " << ", testlist2[list2count].name)
-            #mergelist.append(twoListObjToOneList(testlist1[list1count]," << ",blank))
-            #print("compare fn, mergelist < " , mergelist)
-            #do not increment counter
-                
-        elif testlist1[list1count].name > testlist1[list1count].name:#A<B and A<a
-            print("name ", testlist1[list1count].name, " >> ", testlist2[list2count].name)
-            #mergelist.append(twoListObjToOneList(asa1obj," == ",asa2.sortednetworkobjarray[asa2index]))
-            #print("compare fn, mergelist >" , mergelist)
-         if 
-    # mergelist is now a big list of (list of strings) 
+        else:
+            print("compareObjElements unknown condition")
+    # mergelist is now a big list of strings
+    #check termination conditions
+        print("check termination conditions Compare Obj Lists ")
+        if (list1count==len(testlist1)) and (list2count==len(testlist2)):
+            print("end of lists, end compare true for compare obj lists")
+            print(mergelist)
+            endcompare=True
+        elif (list1count==len(testlist1)) or (list2count==len(testlist2)): 
+            print("end of one list, end compare false for compare obj lists")
+            if list1count==len(testlist1):
+                while list2count < len(testlist2):
+                    templist=(twoListObjToOneList(rightobj=testlist2[list2count]))
+                    for element in templist:
+                        print("compare obj list element- diff obj", element)
+                        mergelist.append(element)    
+                    list2count += 1
+                    if list2count==len(testlist2):
+                        endcompare=True
+            elif list2count==len(testlist2):
+                while list1count < len(testlist1):
+                    templist=(twoListObjToOneList(leftobj=testlist1[list1count]))
+                    for element in templist:
+                        print("compare obj list element- diff obj", element)
+                        mergelist.append(element)    
+                    list1count += 1
+                    if list1count==len(testlist1):
+                        endcompare=True
+        else:
+            print("count1 < len1 and count2 < len2, keep processing compare obj list")
+        
+    return(mergelist)
+#end Compare Two Object Lists return (list of strings)   
 
-    return()
-#end Compare Two Object Lists    
     
 def compareASAs (asa1, asa2):  #compare complete ASAs, write simularities and differences to a file
     """compare network objects by name. INPUT two ASA objects, OUTPUT file write
@@ -305,14 +378,20 @@ def testthis():
         ASA1 and ASA2 
         """
     asafilename1="shortASA-NetObjTest1.txt"
-    asafilename2="shortASA-NetObjTest1a.txt"
+    asafilename2="shortASA-NetObjTest1b.txt"
+    textID="" #this will hold the alphabetically first name
     #load ASAs loads the object lists as well as the sorted object list for network, group, service, and acl.
     loadASAs(asalist, "asa01", asafilename1)
     loadASAs(asalist, "asa02", asafilename2)
     #two asa's loaded. check for differences
-    compareObjLists(asalist[0].sortednetworkobjarray, asalist[1].sortednetworkobjarray)
+    mergelist = compareObjLists(asalist[0].sortednetworkobjarray,asalist[1].sortednetworkobjarray)
+    print("return from comp obj lists, print results")
+    for textline in mergelist:
+        print(textline)
 
-
+    
+    return()     
+    #end testthis
     
 def mainmenu():    
     """this prints out the main menu and returns user input"""
