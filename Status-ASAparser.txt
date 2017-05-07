@@ -1,4 +1,33 @@
 Where am I at right now with my ASA Parser tool?
+2017 may 07th 2045 to 2150
+  I am not the most gifted programmer. However, I'm not going to let that discourage me. I am happy to take a lot longer than I think it ought to take me to make a correction. I find problems. Maybe I should not have coded the problems to begin with, but I have examined my code and output and discovered problems to fix. I have the disadvantage of working alone on this, so when there is something I want to fix, I have to think about it and work through it. I think it would be easier to ask someone for a hint with how they document code, and decide when to make something a separate function vs a large function.
+  
+  My compare methods are identifying when an object is different. I just need to fix the methods that format the strings for output or saving to a file.
+  
+  I did get a "one button gui" working as well. once the string formatting methods are working the way I want, I'll try to change from a menu to a gui with a few buttons. 
+  
+  This is frustrating and difficult, but it is also exactly what I would like to be doing right now. 
+  
+  I have to laugh too. I have enough of the program working to be useful. It puts out to a file the ordered list of ASA Network and Service objects, as well as ACL's. When I told some friends and coworkers about the program I was writing, they were helpful in telling me how a person could copy and paste into notepad, then excel, then back to notepad, do a diff, do this and that, complete complex manual processes, to copy/paste etc. I know it is possible to do all of that. That *is* the reason to write a script to do it for me. I have a need to do a thorough job comparing these lists. I know I will make mistakes doing it manually. Where my program is now, you *could* take the output from two ASA's and put them into Notepad++ (which is an awesome program that I am using to write this). From Notepad++, I *could* do a diff and scroll through and manually mark changes. Why would I want to? Wouldn't it be easier to just finish and fix the code so it works right, and then I just press a button to get reliable repeatable results. It makes more sense to me. Maybe I'm just weird that way.
+
+2017 may 06th 1430 to 1600 
+  I spent more time thinking about the compare objects than I actually spent at the keyboard. I have an index out of bounds error, which I was looking for. Usually, for me, it is checking for a condition at the wrong spot, incrementing something in the wrong spot or multiple times, or checking less than, instead of less than or equal.
+  
+  I fixed it by adding a check/apply for the sentinal condition "end compare = true" when I incremented a counter.
+  If I am checking two objects that are the same, it works the way I want.
+    [obj1] + [obj2] on one line
+  if they are not the same, it is putting the object in the left column only.  
+
+2107 apr 25th 0825
+  Working on compare objects. if name1==name2, objects may be the same. if name1 != name2, objects are not the same, stop checking. do the not equal first. even though most objects will probably match up, i think checking the not equal will drop through faster. what do i pass back to the calling function? if the objects are the same, i know that what i passed in is the same. if the objects are not the same, but their names are the same, that prevents me from just returning name1. i think i need to just return text "object1", if object 1 comes first alphabetically, and "object2", if object2 comes first.
+  
+  I would like my editor/ide to tell me everywhere my method is called from. At the moment, I am using notepad++, so it may be in my best interest to move to a better ide. 
+
+2017 apr 22nd
+  I have arrived at the realization that it takes me 45 mins to figure out where i was when i stopped working on my project last time, and then i code for 15 mins, and then have to stop for one reason or another. I am going to try to start setting some shorter goals. something like "redo the compare functions" is a lot more challenging than split the compareASA function into two sections. Likewise, building a GUI is a lot of work when i have never done it before. 
+  
+  I also need to have some non-project focused tasks, like adding comments. I also need to have time to review other code, away from my ASA stuff.
+
 2017 apr 18th
   redoing some stuff.
   compareASAs should call CompareObjList. passing in two network/service object lists.
