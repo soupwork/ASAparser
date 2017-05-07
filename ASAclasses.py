@@ -154,11 +154,9 @@ class ASAobject():
                     #[0:11] is slice that contains access-list 
                     objindex=0
                     typestart=tempstring.find("access-list ")
-                    #objstring=tempstring[typestart+11:-1]#-1 to remove the newline
                     objstring=tempstring[:-1]#-1 to remove the newline
                     print("acl name is ", objstring)
-                    #objtype=tempstring[typestart:typestart+11]
-                    #print("object type is ", objtype)
+
                     tempstring=datasource.readline()
                     
                     #now create object and add to acl object array
@@ -168,9 +166,7 @@ class ASAobject():
         return() #end load array
 
 
-
-
-        
+     
     def wastefullsort(self, networkobjarray, sortednetworkobjarray):
         #sort network objects by name
         #print("Wasteful Sort Network Objects by Name")
@@ -194,14 +190,14 @@ class ASAobject():
             else: #count backwards from end until sort position found
                 count=len(sortednetworkobjarray) #count is index of last position
                 #print("else count is ", count)
-                if testobject.name < sortednetworkobjarray[count-1].name:#A<B and A<a
-                    print("testobject.name < sortednetworkobjarray[count].name >>proceed to while loop")
+                #if testobject.name < sortednetworkobjarray[count-1].name:#A<B and A<a
+                    #print("testobject.name < sortednetworkobjarray[count].name >>proceed to while loop")
                     
                 while (testobject.name < sortednetworkobjarray[count-1].name) and (count>0):
                     count-=1 #decrement counter same as count = count-1
                     
                 #end while
-                print(testobject.name, " < ", sortednetworkobjarray[count-1].name)
+                #print(testobject.name, " < ", sortednetworkobjarray[count-1].name)
                 (testobject.name).strip() #remove leading/trailing spaces
                 sortednetworkobjarray.insert(count,testobject)
             #end if-find sort position    
@@ -212,7 +208,7 @@ class ASAobject():
             sortindex +=1 #increment index
             
         #end for loop    
-        print("end wastefull sort")
+        #print("end wastefull sort")
         return() #end Wastefull Sort
  
 
@@ -266,7 +262,9 @@ class NetworkObject():
         newlist=[]
         if len(self.name)<38:
           newlist.append(self.name.ljust(38))
-        
+        else:
+            newlist.append(self.name)
+            
         newlist.append(self.objtype.ljust(38))
         leftstring,rightstring="init","init"
         
@@ -320,7 +318,7 @@ class NetworkObject():
             leftstring=leftstring[:rightspace]
             
         
-        print(leftstring, " << left string ** right string >> ", rightstring)
+        print(leftstring, " << 38char left string ** remainder right string >> ", rightstring)
         #print("Length of adjusted teststring is ", len(leftstring))   
         return(leftstring, rightstring)
         
@@ -382,12 +380,12 @@ class ACLObject():
 if __name__=="__main__":
     templist=[]
     datalist=[]
-    
+    remarklist=[]
     def writedata (writelist):
         """write to a file. asa_outfile is filename
             writelist is list of lines to be appended to file.
         """
-        asa_outfile="PARSED-DC1-ASA-01_2017apr06th-1000hrs.txt"
+        asa_outfile="PARSED-DC2-ASA-01_2017apr20th-1550hrs.txt"
         fileout=open(asa_outfile, 'a')#open filename, append to end
         fileout.write(asa_outfile + "\n"+"\n")
         for element in writelist:
@@ -401,7 +399,7 @@ if __name__=="__main__":
     
     
     print("running __main__ ASAclassesFeb")
-    asa1obj=ASAobject("ASA1","DC1-ASA-01_2017apr06th-1000one hrs.txt") #create the ASAobject
+    asa1obj=ASAobject("ASA1","DC2-ASA-01_2017apr20th-1550hrs.txt") #create the ASAobject
     asa1obj.loadarray() #execute the load array function 
        
     asa1obj.wastefullsort(asa1obj.networkobjarray,asa1obj.sortednetworkobjarray)
@@ -440,7 +438,9 @@ if __name__=="__main__":
         checkstring=inside.aclstring
         if checkstring.find("remark")==-1: #don't write the remarks in the ACL list
             datalist.append(inside.aclstring)
-        #else: decide what do to with remarks
+        else: #put  remarks in a remarks list
+            remarklist.append(inside.aclstring)
     writedata(datalist)
+    writedata(remarklist)#put remarks at end of file
     
     #end test main ASAclasses
