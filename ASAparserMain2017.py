@@ -9,10 +9,11 @@
 
 from ASAclasses import ASAobject, NetworkObject
 
-asafilename1="shortASA-NetObjTest1.txt"
-asafilename2="shortASA-NetObjTest1.txt"
-asalist=[]#this is a list of asa objects.
-blankparamlist=[" "*38,]
+asafilename1="f:\DC1-ASA-01_2017may10th-1200hrs.txt"
+asafilename2="f:\DC2-ASA-01_2017may10th-1200hrs.txt"
+asalist=[]#this is a list of asa objects
+blank38=" "*38
+blankparamlist=[blank38, blank38, blank38]
 blanknetobj=NetworkObject("blank", "object network", blankparamlist)
 asaindex=0 
 
@@ -74,7 +75,7 @@ def displayOneASA(asaobj):
     for netobj in asaobj.sortednetworkobjarray:
         newlist.clear()
         print("\n  sorted name ",netobj.name)
-        print("\n  sorted type ",netobj.objtype)
+        print("sorted type ",netobj.objtype)
         newlist.append(netobj.onelist())
         print(newlist)
     return()            
@@ -103,9 +104,7 @@ def outFilePrompt():
     print(testfile.read())
        
     return (asa_OUTfilename)
-    #end outFilePrompt
-    
-
+    #end outFilePrompt Return filename
  
 def saveOneASA(asaobj):
     
@@ -154,7 +153,7 @@ def makeOneLine(leftstring="*",midstring=" ",rightstring="*"):
     singlestring=('{:^38}{}{:^38}').format(leftstring,midstring,rightstring)
     print("make one line single string is \n", singlestring)
     return(singlestring)
-#end make One Line- make one string from three Strings    
+#end make One Line- Return *one string* from three Strings    
     
 def twoListToOneList(leftlist=blankparamlist, midobj="    ", rightlist=blankparamlist):
     """ left and right elements in left and right lists should be converted to a single string in this method,
@@ -165,7 +164,7 @@ def twoListToOneList(leftlist=blankparamlist, midobj="    ", rightlist=blankpara
     lenrightlist=len(rightlist)
     shortlen=len(leftlist)
     biglist=rightlist #it is a guess
-    
+       
     #are both lists the same size? do I need to add blank lines?
     if lenrightlist<shortlen :
         shortlen=len(rightlist)
@@ -185,11 +184,10 @@ def twoListToOneList(leftlist=blankparamlist, midobj="    ", rightlist=blankpara
             print(tempstring, "tempstring, twoObjToOneList")
             mergelist.append(tempstring)
     else: #one list is blank
-        for ndex in range(len(leftlist)): #will count starting at 0
+        for count in range(len(leftlist)): #will count starting at 0
             print("leftlist ", leftlist[count])
             tempstring=str(leftlist[count])
             print(tempstring, "tempstring, twoObjToOneList")
-            count += 1
             mergelist.append(tempstring)
 
     return(mergelist)
@@ -221,9 +219,9 @@ def twoListObjToOneList(leftobj=blanknetobj, midobj="    ", rightobj=blanknetobj
         mergelist=twoListToOneList(leftlist=leftlist, rightlist=rightlist)
         
     #confirmed each element returned in mergelist is a string
-    #print(type(line), ">>>>", line)
+    
     return(mergelist)    
-#end twoListObj to One List of Strings * return mergelist[]
+#end twoListObj to One List of Strings * return mergelist[strings]
 
 
 def compareObjElements(testobj1, testobj2):
@@ -241,8 +239,7 @@ def compareObjElements(testobj1, testobj2):
         print (testobj1.name, " NOT EQUAL ", testobj2.name, "in compareobjelements")
         if testobj1.name < testobj2.name: #testobj1 is alpha first
             textID="testobj1"
-            
-        if testobj1.name > testobj2.name: #testobj2 is alpha first
+        else:
             textID="testobj2"    
     
     
@@ -272,7 +269,7 @@ def compareObjLists (testlist1, testlist2):
             sameobj,textID=compareObjElements(testlist1[list1count],testlist2[list2count])
         print(" Compare Obj Lists TextID is ", textID)
         if sameobj:
-            templist=(twoListObjToOneList(leftobj=testlist1[list1count], midobj=" == ",rightobj=testlist1[list2count]))
+            templist=(twoListObjToOneList(leftobj=testlist1[list1count], midobj=" == ",rightobj=testlist2[list2count]))
             for element in templist:
                 print("compare obj list element- same obj", element)
                 mergelist.append(element)
@@ -378,7 +375,7 @@ def testthis():
         ASA1 and ASA2 
         """
     asafilename1="shortASA-NetObjTest1.txt"
-    asafilename2="shortASA-NetObjTest1b.txt"
+    asafilename2="shortASA-NetObjTest1d.txt"
     textID="" #this will hold the alphabetically first name
     #load ASAs loads the object lists as well as the sorted object list for network, group, service, and acl.
     loadASAs(asalist, "asa01", asafilename1)
@@ -386,7 +383,10 @@ def testthis():
     #two asa's loaded. check for differences
     mergelist = compareObjLists(asalist[0].sortednetworkobjarray,asalist[1].sortednetworkobjarray)
     print("return from comp obj lists, print results")
-    for textline in mergelist:
+    #insert the two filenames at top of text list
+    
+    mergelist.insert(0, makeOneLine(leftstring=asafilename1,rightstring=asafilename2))
+    for textline in mergelist: 
         print(textline)
 
     

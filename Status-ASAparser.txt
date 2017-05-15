@@ -1,4 +1,10 @@
 Where am I at right now with my ASA Parser tool?
+
+2017 may 15th 1900 to 2030
+  A tiny typo can make a big difference in a compare/sort routine.
+  I fixed the sort routine. a simple addition will be to iterate through the network object/service object/acl lists in order and flag the differences.
+  This is satisfying the necessary function i had of parsing through an ASA config and helping me find the differences. I'll have to mostly put this down for a while and focus on the CCNA-Security.
+  
 2017 may 07th 2045 to 2150
   I am not the most gifted programmer. However, I'm not going to let that discourage me. I am happy to take a lot longer than I think it ought to take me to make a correction. I find problems. Maybe I should not have coded the problems to begin with, but I have examined my code and output and discovered problems to fix. I have the disadvantage of working alone on this, so when there is something I want to fix, I have to think about it and work through it. I think it would be easier to ask someone for a hint with how they document code, and decide when to make something a separate function vs a large function.
   
