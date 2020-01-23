@@ -3,14 +3,14 @@
     This is the main module
     It will create two ASA objects based on the filenames.
     ASA objects are defined in ASAclasses
-    
+    to run, navigate to dirctory and python ASAparserMain2017.py
 """
 #copyright (c)2017 Douglas J. Sheehan, Doug Sheehan IT Consulting. Free to use. Credit where due please.
 
-from ASAclasses import ASAobject, NetworkObject
+from ASAclasses import ASAobject, NetworkObject, ACLObject
 
-asafilename1="f:\DC1-ASA-01_2017may10th-1200hrs.txt"
-asafilename2="f:\DC2-ASA-01_2017may10th-1200hrs.txt"
+asafilename1="SharedFWv413.txt"
+asafilename2="SharedFWv413.txt"
 asalist=[]#this is a list of asa objects
 blank38=" "*38
 blankparamlist=[blank38, blank38, blank38]
@@ -134,8 +134,7 @@ def saveAllASAs():
     
 def writedata (writelist):
     """write to a file. asa_outfile is filename
-       writelist is list of lines to be appended to file.
-    """
+       writelist is list of lines to be appended to file. """
     asa_outfile="asa_outfile.txt"
     fileout=open(asa_outfile, 'a')#open filename, append to end
     fileout.write(asa_outfile + "\n"+"\n")
@@ -151,7 +150,7 @@ def makeOneLine(leftstring="*",midstring=" ",rightstring="*"):
         midstring="****"
         
     singlestring=('{:^38}{}{:^38}').format(leftstring,midstring,rightstring)
-    print("make one line single string is \n", singlestring)
+    #print("make one line single string is \n", singlestring)
     return(singlestring)
 #end make One Line- Return *one string* from three Strings    
     
@@ -245,11 +244,11 @@ def compareObjElements(testobj1, testobj2):
     
     elif testobj1.name == testobj2.name:
         sameobj=True
-        print (testobj1.name, " == ", testobj2.name, "in compareobjelements")  
+        #print (testobj1.name, " == ", testobj2.name, "in compareobjelements")  
         textID="testobj1"
         
-    print("same obj status is ", sameobj)   
-    print("alpha first textID is ", textID) 
+    #print("same obj status is ", sameobj)   
+    #print("alpha first textID is ", textID) 
     return(sameobj,textID)
 #end compare two object elements *return sameobj, textID="testobj1" or "testobj2"    
 
@@ -265,13 +264,13 @@ def compareObjLists (testlist1, testlist2):
     endcompare = False 
     while not endcompare:
         if (list1count<len(testlist1)) and (list2count<len(testlist2)):
-            print("load two object elements inside compare lists")
+            #print("load two object elements inside compare lists")
             sameobj,textID=compareObjElements(testlist1[list1count],testlist2[list2count])
         print(" Compare Obj Lists TextID is ", textID)
         if sameobj:
             templist=(twoListObjToOneList(leftobj=testlist1[list1count], midobj=" == ",rightobj=testlist2[list2count]))
             for element in templist:
-                print("compare obj list element- same obj", element)
+                #print("compare obj list element- same obj", element)
                 mergelist.append(element)
             
             list1count += 1
@@ -281,14 +280,14 @@ def compareObjLists (testlist1, testlist2):
         elif textID=="testobj1"and list1count < len(testlist1):
             templist=(twoListObjToOneList(leftobj=testlist1[list1count]))
             for element in templist:
-                print("compare obj list element- diff obj", element)
+                #print("compare obj list element- diff obj", element)
                 mergelist.append(element)
             list1count += 1
          
         elif textID=="testobj2" and list2count < len(testlist2):
             templist=(twoListObjToOneList(rightobj=testlist2[list2count]))
             for element in templist:
-                print("compare obj list element- diff obj", element)
+                #print("compare obj list element- diff obj", element)
                 mergelist.append(element)    
             list2count += 1
                 
@@ -298,8 +297,8 @@ def compareObjLists (testlist1, testlist2):
     #check termination conditions
         print("check termination conditions Compare Obj Lists ")
         if (list1count==len(testlist1)) and (list2count==len(testlist2)):
-            print("end of lists, end compare true for compare obj lists")
-            print(mergelist)
+            #print("end of lists, end compare true for compare obj lists")
+            #print(mergelist)
             endcompare=True
         elif (list1count==len(testlist1)) or (list2count==len(testlist2)): 
             print("end of one list, end compare false for compare obj lists")
@@ -307,7 +306,7 @@ def compareObjLists (testlist1, testlist2):
                 while list2count < len(testlist2):
                     templist=(twoListObjToOneList(rightobj=testlist2[list2count]))
                     for element in templist:
-                        print("compare obj list element- diff obj", element)
+                        #print("compare obj list element- diff obj", element)
                         mergelist.append(element)    
                     list2count += 1
                     if list2count==len(testlist2):
@@ -316,7 +315,7 @@ def compareObjLists (testlist1, testlist2):
                 while list1count < len(testlist1):
                     templist=(twoListObjToOneList(leftobj=testlist1[list1count]))
                     for element in templist:
-                        print("compare obj list element- diff obj", element)
+                        #print("compare obj list element- diff obj", element)
                         mergelist.append(element)    
                     list1count += 1
                     if list1count==len(testlist1):
@@ -373,29 +372,38 @@ def compareASAs (asa1, asa2):  #compare complete ASAs, write simularities and di
 def testthis():
     """this is a function to make testing a little quicker
         ASA1 and ASA2 
+        E:\DougsProgs\ASAparserV01\asaparser
         """
-    asafilename1="shortASA-NetObjTest1.txt"
-    asafilename2="shortASA-NetObjTest1d.txt"
+    asafilename1="e:/dougsprogs/ASAparserV01/asaparser/DC1-ASA-01_2019sep09th-1015hrs.txt"
+    asafilename2="e:/dougsprogs/ASAparserV01/asaparser/DC2-ASA-01_2019sep09th-1015hrs.txt"
+    compareResult="e:/dougsprogs/ASAparserV01/asaparser/ASAcompareDC1andDC2.txt"
     textID="" #this will hold the alphabetically first name
     #load ASAs loads the object lists as well as the sorted object list for network, group, service, and acl.
     loadASAs(asalist, "asa01", asafilename1)
     loadASAs(asalist, "asa02", asafilename2)
     #two asa's loaded. check for differences
     mergelist = compareObjLists(asalist[0].sortednetworkobjarray,asalist[1].sortednetworkobjarray)
+    #mergelist = compareObjLists(asalist[0].sortedNetObjGrouparray,asalist[1].sortedNetObjGrouparray)
+    #mergelist = compareObjLists(asalist[0].serviceobjarray,asalist[1].serviceobjarray)
     print("return from comp obj lists, print results")
     #insert the two filenames at top of text list
-    
     mergelist.insert(0, makeOneLine(leftstring=asafilename1,rightstring=asafilename2))
-    for textline in mergelist: 
-        print(textline)
+    with open(compareResult, 'w') as outfile:
+         for textline in mergelist: 
+            print(textline)   
+            outfile.write(textline + '\n')
 
+    
+       
+    #print("asalist[0].sortedNetObjGrouparray ")
+    #print(len(asalist[0].netobjgrouparray))
     
     return()     
     #end testthis
     
 def mainmenu():    
     """this prints out the main menu and returns user input"""
-    print("\n \n Welcome to Doug's ASA parser. It may one day be a thing of beauty, but it is not today")
+    print("\n \n Welcome to Doug's ASA parser. It may one day be a thing of beauty, but that day is not today")
     print("I'd be happy if it is useful enough and makes my job a little easier.")
     print("What would you like to do today?")
     print("<L> Load an ASA configuration text file")
@@ -439,7 +447,11 @@ if __name__=="__main__":
             
             #    
         elif maininput=='c': #compare
-            pass  
+            mergelist = compareObjLists(asalist[0].sortednetworkobjarray,asalist[1].sortednetworkobjarray)
+            mergelist.insert(0, makeOneLine(leftstring=asafilename1,rightstring=asafilename2))
+            
+            
+            
         elif maininput=='f': #find/search
             printOneASA(asa1obj)       
         elif maininput=='q': #quit
